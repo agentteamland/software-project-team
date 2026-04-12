@@ -1,0 +1,7 @@
+{
+  "name": "software-project-team",
+  "description": "Yazılım projeleri için agent ekibi",
+  "dependencies": [
+    "https://github.com/mkurak/agent-workshop-core.git"
+  ]
+}
