@@ -146,6 +146,12 @@ No hard deletes. `ISoftDeletable` interface (IsDeleted, DeletedAt, DeletedBy) + 
 
 ---
 
+### Seed Data
+SQL-file-based development seeding. Single `Seeds/seed.sql` file, append-only, idempotent INSERTs. Auto-executed on startup in Development. Reset-db endpoint for clean slate. Agent should ask "does this feature need seed data?" on every new feature — if yes, append to seed.sql.
+→ [Details](children/seed-data.md)
+
+---
+
 ### Workflows
 Step-by-step guides for common operations: new feature (Domain→Application→Infrastructure→Api→Migration→Test), new query, migration (Docker only!), RMQ messaging, auth-required endpoint, internal endpoint (Worker/Socket), and the full handler logging checklist.
 → [Details](children/workflows.md)
