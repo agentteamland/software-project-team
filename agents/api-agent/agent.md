@@ -52,28 +52,100 @@ FluentValidation `AbstractValidator<TCommand>` is mandatory. The pipeline behavi
 
 ## Knowledge Base
 
-Detailed information, patterns, strategies, and workflows are in the `children/` directory next to this file. **On every invocation, read all .md files under `children/`** — they constitute my expert knowledge.
+On every invocation, read the relevant `children/` files below based on the task at hand. If project-specific rules exist, also read `.claude/docs/coding-standards/api.md`.
 
-### Children Files
+---
 
-| File | Topic |
-|------|-------|
-| [architecture-layers.md](children/architecture-layers.md) | Domain, Application, Infrastructure, Api layer details |
-| [audit-trail.md](children/audit-trail.md) | Two-layer change tracking (IAuditableEntity + AuditLog table) |
-| [caching-strategy.md](children/caching-strategy.md) | Pipeline behavior + Redis, ICacheable, cache invalidation |
-| [concurrency-handling.md](children/concurrency-handling.md) | Optimistic locking with RowVersion |
-| [dynamic-settings.md](children/dynamic-settings.md) | DB + Redis centralized config, no redeploy for changes |
-| [error-handling.md](children/error-handling.md) | Exception hierarchy, global handler, no try-catch in handlers |
-| [file-storage.md](children/file-storage.md) | MinIO/S3 compatible, entity-based paths, signed URLs |
-| [idempotency.md](children/idempotency.md) | X-Idempotency-Key + Redis SETNX, pipeline behavior |
-| [logging-strategy.md](children/logging-strategy.md) | Virtual debug — log every step, no performance concern |
-| [multi-tenancy.md](children/multi-tenancy.md) | User + Profile + Tenant, 3 auth flows, data isolation |
-| [naming-conventions.md](children/naming-conventions.md) | File, namespace, endpoint naming patterns |
-| [notification-pattern.md](children/notification-pattern.md) | HTTP instant + RMQ async, decision table |
-| [pagination.md](children/pagination.md) | Cursor-based infinite scroll, optional count |
-| [rmq-topology.md](children/rmq-topology.md) | Consumer declares own topology, idempotent |
-| [soft-delete.md](children/soft-delete.md) | ISoftDeletable + global query filter |
-| [workflows.md](children/workflows.md) | New feature, query, migration, endpoint workflows |
+### Architecture Layers
+Domain (pure C#, no deps), Application (Mediator, FluentValidation, pipeline behaviors), Infrastructure (EF Core, Auth, RMQ, Redis), Api (composition root, Minimal API endpoints). Vertical Slice structure: Command + Handler + Validator in same folder.
+→ [Details](children/architecture-layers.md)
 
-Additionally, if there are project-specific rules, also read the `.claude/docs/coding-standards/api.md` file. This varies per project and grows over time.
+---
 
+### Audit Trail
+Two-layer change tracking. Layer 1: IAuditableEntity (CreatedBy, ModifiedBy) on every entity. Layer 2: AuditLog table — automatic change history via ChangeTracker (entity, field, old value, new value, who, when). No extra code in handlers — interceptor handles everything.
+→ [Details](children/audit-trail.md)
+
+---
+
+### Caching Strategy
+Cache-Aside pattern as a Mediator pipeline behavior. Query implements `ICacheable` → CachingBehavior checks Redis → handler runs only on cache miss. TTL read from dynamic settings. Cache invalidation via `ICacheInvalidator` on commands — deklarative, handler stays clean.
+→ [Details](children/caching-strategy.md)
+
+---
+
+### Concurrency Handling
+Optimistic locking via `RowVersion` property + `IsConcurrencyToken()`. EF Core adds `WHERE RowVersion = @original` automatically. Handler needs no extra code. `DbUpdateConcurrencyException` → 409 Conflict. Client sends RowVersion in update requests, gets new version back.
+→ [Details](children/concurrency-handling.md)
+
+---
+
+### Dynamic Settings
+Two-layer configuration: static (appsettings = defaults) + dynamic (DB → Redis = override). Redis-only, no dictionary cache, no RMQ, no periodic refresh. Set: API endpoint → write DB + Redis → instant propagation. Get: read Redis → fallback DB → fallback appsettings. Other hosts access via API endpoints.
+→ [Details](children/dynamic-settings.md)
+
+---
+
+### Error Handling
+Exception hierarchy: `NotFoundException`→404, `ValidationException`→422, `ForbiddenException`→403, unhandled→500. No try-catch in handlers — throw the appropriate exception, global `IExceptionHandler` maps to HTTP status + ProblemDetails. Development shows details, production shows generic message.
+→ [Details](children/error-handling.md)
+
+---
+
+### File Storage
+MinIO (S3-compatible) in dev, AWS S3 in production. Entity-based path default: `{entity}/{id}/{purpose}-{guid}.{ext}`. Handler can override with custom path. `IStorageService` in Application, `S3StorageService` in Infrastructure. Integrates with soft delete — hard delete phase removes entire entity directory.
+→ [Details](children/file-storage.md)
+
+---
+
+### Idempotency
+Client sends `X-Idempotency-Key` header (UUID v4). `IIdempotent` interface on commands → IdempotencyBehavior checks Redis SETNX. Already processed → return cached response, handler doesn't run. Race condition protection via "processing" flag. Key is optional — null means behavior is skipped.
+→ [Details](children/idempotency.md)
+
+---
+
+### Logging Strategy — Virtual Debug
+Production'da breakpoint koyamazsın — loglar senin debugger'ın. Every handler tells its story through logs. Two logs per step: (1) what I'm about to do + with what data, (2) what I did + result. No performance concern — pipeline is non-blocking (Channel.TryWrite = nanoseconds). Bol logla, korkma.
+→ [Details](children/logging-strategy.md)
+
+---
+
+### Multi-Tenancy
+User + Profile + Tenant model. Optional — disabled by default. User = identity (auth), Profile = context (which tenant, which role), Tenant = isolation boundary (name varies: Dealer, Seller, Organization). Three auth flows: standard login, tenant-scoped embed/auto-login, tenant-scoped domain. Global query filter + interceptor for automatic data isolation.
+→ [Details](children/multi-tenancy.md)
+
+---
+
+### Naming Conventions
+Files: `{Action}Command.cs`, `{Action}Handler.cs`, `{Action}Validator.cs`, `{Feature}Endpoints.cs`, `{Entity}Configuration.cs`. Namespaces: `{Project}.Application.Features.{Feature}.Commands.{Action}`. Endpoints: route in kebab-case, method PascalCase+Async, WithName PascalCase.
+→ [Details](children/naming-conventions.md)
+
+---
+
+### Notification Pattern
+Two methods — choose based on decision table. HTTP (instant): most cases, single user/group/all, 5-10ms. RMQ (async): batch notifications, message must not be lost, handler shouldn't slow down. `INotificationService` for HTTP, `INotificationPublisher` for RMQ. Check the decision table for every handler that needs notifications.
+→ [Details](children/notification-pattern.md)
+
+---
+
+### Pagination
+Cursor-based infinite scroll. No page numbers. Encoded cursor: Base64(`{sortValue}|{id}`) — supports sorting by any field. `IncludeCount` optional (default off — `COUNT(*)` is expensive). Fetch `PageSize + 1` to determine `HasMore`. Filtering is NOT generic — each feature writes its own Where clauses in the handler.
+→ [Details](children/pagination.md)
+
+---
+
+### RMQ Consumer Topology
+Every consumer (MailSender, LogIngest, etc.) MUST declare its own RMQ topology at startup — exchange, queue, binding. Consumer may start before API — cannot assume topology exists. Declare with the SAME arguments (including DLX if any), otherwise RabbitMQ throws `PRECONDITION_FAILED`. Idempotent — declaring twice is safe.
+→ [Details](children/rmq-topology.md)
+
+---
+
+### Soft Delete
+No hard deletes. `ISoftDeletable` interface (IsDeleted, DeletedAt, DeletedBy) + global query filter + SaveChanges interceptor that converts `Delete` to `Modified`. Handler calls `Remove()` normally — interceptor handles the rest. `IgnoreQueryFilters()` for admin/recovery access. Physical cleanup via separate Worker job.
+→ [Details](children/soft-delete.md)
+
+---
+
+### Workflows
+Step-by-step guides for common operations: new feature (Domain→Application→Infrastructure→Api→Migration→Test), new query, migration (Docker only!), RMQ messaging, auth-required endpoint, internal endpoint (Worker/Socket), and the full handler logging checklist.
+→ [Details](children/workflows.md)
