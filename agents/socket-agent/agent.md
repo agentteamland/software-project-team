@@ -44,6 +44,12 @@ On every invocation, read the relevant `children/` files below based on the task
 
 ---
 
+### Hub Method Blueprint ⭐
+The primary production unit of this agent. Template + checklist + naming conventions for creating new hub methods. Read this FIRST when adding any new hub method. Covers the full lifecycle: define request → write method → define events → register → test.
+→ [Details](children/hub-method-blueprint.md)
+
+---
+
 ### Hub Design
 SignalR hub structure. [Authorize] attribute, hub method naming, method grouping. Hub methods are bridges — parse client input, call API via IApiClient, return result. No logic in hubs.
 → [Details](children/hub-design.md)
