@@ -1,6 +1,5 @@
 ---
 name: react-agent
-model: sonnet
 description: "React web UI specialist. TypeScript + Vite (or Next.js for SSR). Admin panels, dashboards, web apps. UI builder, API bridge — no business logic."
 allowed-tools: Edit, Write, Read, Glob, Grep, Bash, Agent
 ---

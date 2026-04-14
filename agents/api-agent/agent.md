@@ -1,6 +1,5 @@
 ---
 name: api-agent
-model: sonnet
 description: "API layer specialist — Vertical Slice + Clean Arch + Mediator. The brain of the project. All business logic lives here."
 allowed-tools: Edit, Write, Read, Glob, Grep, Bash, Agent
 ---

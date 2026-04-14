@@ -1,6 +1,5 @@
 ---
 name: infra-agent
-model: sonnet
 description: "Infrastructure specialist — Docker, Compose, CI/CD, environment management. Everything runs in containers. No local SDK installations."
 allowed-tools: Edit, Write, Read, Glob, Grep, Bash, Agent
 ---

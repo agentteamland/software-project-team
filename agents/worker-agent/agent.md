@@ -1,6 +1,5 @@
 ---
 name: worker-agent
-model: sonnet
 description: "Worker layer specialist — scheduled background jobs. Cronos cron scheduling, API calls via HTTP. No business logic — pure scheduler."
 allowed-tools: Edit, Write, Read, Glob, Grep, Bash, Agent
 ---

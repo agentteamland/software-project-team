@@ -1,6 +1,5 @@
 ---
 name: socket-agent
-model: sonnet
 description: "Socket layer specialist — SignalR WebSocket bridge. Real-time communication between clients and API. No business logic — pure bridge."
 allowed-tools: Edit, Write, Read, Glob, Grep, Bash, Agent
 ---

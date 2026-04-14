@@ -1,6 +1,5 @@
 ---
 name: flutter-agent
-model: sonnet
 description: "Flutter mobile/tablet specialist. iOS + Android from a single codebase. UI builder, API bridge — no business logic."
 allowed-tools: Edit, Write, Read, Glob, Grep, Bash, Agent
 ---
