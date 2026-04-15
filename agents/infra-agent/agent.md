@@ -144,3 +144,9 @@ CPU and memory limits for containers. Elasticsearch/Kibana tuning (JVM heap size
 ### SSL/TLS for Local Development
 mkcert for trusted self-signed certificates. Reverse proxy (nginx/traefik) for HTTPS termination. Required for: OAuth callbacks, secure cookies, PWA testing. Optional — most projects work without it.
 → [Details](children/ssl-local.md)
+
+---
+
+### Code Intelligence (codebase-memory-mcp)
+Knowledge graph of entire codebase via MCP. 66 languages, zero dependencies, sub-ms queries. Solves context blindness in large projects — agent knows who calls whom, who implements what. Always install on projects with 50+ files. Auto-indexed, `.mcp.json` configured.
+→ [Details](children/code-intelligence.md)
