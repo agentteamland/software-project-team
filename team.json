@@ -26,7 +26,10 @@
     { "name": "design-system-agent", "description": "Design tokens, component library, theming, dark-mode support" },
     { "name": "ux-agent", "description": "User experience, flows, accessibility, microcopy" }
   ],
-  "skills": [],
+  "skills": [
+    { "name": "create-new-project", "description": "/create-new-project [Name] \u2014 5-phase scaffold: gather info, create structure, build, /verify-system (mandatory), git init. Tailored to this team's .NET + Flutter + React + Docker stack." },
+    { "name": "verify-system", "description": "/verify-system \u2014 4-level end-to-end health check for this team's stack (containers, ports, app health, pipelines: logging/email/auth/socket/worker/redis/storage + audit bonus)" }
+  ],
   "rules": [],
   "extends": null,
   "excludes": [],
