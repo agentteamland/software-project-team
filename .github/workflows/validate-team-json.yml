@@ -1,0 +1,23 @@
+name: Validate team.json
+
+on:
+  push:
+    branches: [main]
+    paths: ["team.json"]
+  pull_request:
+    paths: ["team.json"]
+
+jobs:
+  schema-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install ajv-cli
+        run: npm install --global ajv-cli ajv-formats
+      - name: Download schema from core
+        run: curl -sfL -o team.schema.json "https://raw.githubusercontent.com/agentteamland/core/main/schemas/team.schema.json"
+      - name: Validate team.json
+        run: ajv validate -c ajv-formats -s team.schema.json -d team.json --spec=draft2020 --strict=false
