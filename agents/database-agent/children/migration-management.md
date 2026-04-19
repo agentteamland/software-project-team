@@ -199,6 +199,46 @@ public partial class SeedDefaultRoles : Migration
 - Always implement `Down()` for reversibility
 - Use raw SQL for seed data — EF's `HasData()` generates noisy diffs
 
+## PostgreSQL Extensions (PostGIS, etc.)
+
+Some features require Postgres extensions. The extension binaries ship with the Docker image (e.g., `imresamu/postgis:17-3.5-alpine` includes PostGIS), but the extension isn't active in the database until `CREATE EXTENSION` runs. Do this in a migration — not in seed.sql, not in application startup — so every environment (dev, CI, prod) gets it deterministically.
+
+### PostGIS
+
+If the project was scaffolded with Q4 "Spatial/GIS support = Yes" (see `/create-new-project`), the db image is `imresamu/postgis:*-alpine` and the FIRST migration must enable the extension before any geometry columns appear. Place it ahead of the initial schema so column types like `geography(Point,4326)` resolve:
+
+```bash
+# Inside the API container
+docker compose exec api dotnet ef migrations add EnablePostgis \
+  --project ../{ProjectName}.Infrastructure \
+  --startup-project .
+```
+
+Edit the generated migration:
+
+```csharp
+public partial class EnablePostgis : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS postgis;");
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.Sql("DROP EXTENSION IF EXISTS postgis;");
+    }
+}
+```
+
+**Why `IF NOT EXISTS`:** the migration must be idempotent — a restore-from-backup or a re-run on a partially-migrated DB shouldn't fail.
+
+**EF Core side:** add `.HasPostgresExtension("postgis")` to `OnModelCreating` so the snapshot records it; then `NetTopologySuite` types (Point, LineString, Polygon) map directly to `geography`/`geometry` columns via `UseNetTopologySuite()` on the `NpgsqlDataSourceBuilder`.
+
+### Other extensions
+
+Same pattern — one migration per extension, `CREATE EXTENSION IF NOT EXISTS {name}` up, `DROP EXTENSION IF EXISTS {name}` down. Common candidates: `pg_trgm` (fuzzy text search), `pgcrypto` (hashing), `uuid-ossp` (UUID generation — usually unnecessary on Postgres 13+ since `gen_random_uuid()` is built in).
+
 ## Migration File Structure
 
 ```

@@ -87,6 +87,25 @@ Use this template for third-party services (databases, queues, caches):
 - Persistent data volumes are named `{service}_data` (e.g., `postgres_data`, `redis_data`)
 - Ports are always parameterized with `${VAR:-default}` for override flexibility
 
+### Spatial/GIS override — PostgreSQL
+
+If the project needs maps, location, polygons, or other spatial queries, the `db` service image changes:
+
+```yaml
+  db:
+    image: imresamu/postgis:17-3.5-alpine   # NOT postgres:17-alpine, NOT postgis/postgis
+    # rest of the service stays the same (env, ports, volumes, healthcheck)
+```
+
+**Why this specific image:**
+- Official `postgis/postgis` does NOT publish an ARM64 manifest (as of 2026) — it fails on Apple Silicon.
+- `imresamu/postgis` is maintained by PostGIS maintainer Imre Samu and ships multiarch builds (amd64 + arm64) — reliable cross-platform.
+- Tag convention: `{postgres-major}-{postgis-version}-alpine` (e.g., `17-3.5-alpine`). Bump both parts when upgrading.
+
+**Companion change:** The first migration (via database-agent) must run `CREATE EXTENSION IF NOT EXISTS postgis;`. Without the extension, PostGIS types and functions aren't available even though the image ships with them.
+
+**Don't pull this image for non-GIS projects.** It's ~5× larger than vanilla `postgres:17-alpine` — wasted bandwidth and disk for projects that don't need spatial features.
+
 ## Frontend Service Template
 
 Use this template for React/Vite or other frontend dev servers:

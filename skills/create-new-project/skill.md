@@ -77,6 +77,7 @@ Options (multiSelect: true):
 - File Storage (MinIO/S3)
 - Audit Trail (change history tracking)
 - Soft Delete (default: included, ask only to confirm)
+- Spatial/GIS support (maps, location, polygons — switches DB to PostGIS and seeds the extension)
 
 Note: Logging pipeline, email pipeline, Redis, RabbitMQ, JWT auth, health checks are ALWAYS included — they're core infrastructure, not optional.
 
@@ -185,7 +186,9 @@ src/
 #### 2.3 Docker Compose Services
 
 **Always included (core infrastructure):**
-- db (postgres:17-alpine) — healthcheck, persistent volume
+- db — healthcheck, persistent volume. Image depends on Q4 Spatial/GIS answer:
+  - **No** (default): `postgres:17-alpine`
+  - **Yes**: `imresamu/postgis:17-3.5-alpine` — multiarch (Apple Silicon compatible). Official `postgis/postgis` image does not publish an ARM64 manifest as of 2026; `imresamu/postgis` is maintained by PostGIS maintainer Imre Samu and is the recommended drop-in. When using this image, the first migration must run `CREATE EXTENSION IF NOT EXISTS postgis;` (see database-agent migration-management). Note: PostGIS image is ~5× larger than vanilla postgres — don't pull it for projects that don't need spatial.
 - rabbitmq (rabbitmq:3-management-alpine) — healthcheck
 - redis (redis:7-alpine) — healthcheck
 - elasticsearch (elasticsearch:8.15.0) — single-node, security disabled, JVM 512m
@@ -233,7 +236,16 @@ flutter/
 └── analysis_options.yaml
 ```
 
-**Post-scaffold cleanup (mandatory if `flutter create` was run):**
+**Scaffolding order (do NOT deviate):**
+
+1. Scaffold our custom files first (`lib/main.dart`, `lib/app/`, `lib/core/`, `lib/data/`, `lib/features/`, `pubspec.yaml`, `analysis_options.yaml`). At this point there is NO `ios/` or `android/` platform folder — that's fine.
+2. Generate the missing platform folders by running:
+   ```bash
+   flutter create . --org com.{project-lowercase} --project-name {project-snake-case} --platforms=ios,android
+   ```
+   **NEVER pass `--overwrite`.** Without `--overwrite`, Flutter preserves every existing file (pubspec, main.dart, analysis_options.yaml, README.md, test/widget_test.dart) and only generates the missing platform folders. With `--overwrite`, Flutter silently replaces the custom entry files with template "counter demo" stubs and the non-obvious damage is easy to miss — `lib/app/`, `lib/core/`, `lib/data/`, `lib/features/` survive (they're not in the template), so the project looks fine at a glance while `main.dart`, `pubspec.yaml`, and `analysis_options.yaml` have been nuked.
+
+**Post-scaffold cleanup (mandatory):**
 
 - **Delete `test/widget_test.dart`.** It's the default Flutter stub testing the counter app that our `main.dart` replaces. Leaving it breaks `flutter test` (the counter widget it imports no longer exists). Real widget tests go under `test/features/{feature}/presentation/screens/` per the screen blueprint.
 - **Do not create `l10n.yaml` unless i18n is fully wired.** An orphan `l10n.yaml` (no ARB files, `MaterialApp` without `AppLocalizations.localizationsDelegates`) emits warnings and confuses later sessions. Either (a) fully seed i18n during scaffolding — add `flutter_localizations` to pubspec, create minimal `lib/l10n/app_en.arb` + `app_tr.arb` with `app_name`, wire `MaterialApp`, and write `l10n.yaml` without `synthetic-package` (that option was deprecated in Flutter 3.24) — or (b) skip `l10n.yaml` entirely and let `flutter-agent` add it when the first localized string appears.

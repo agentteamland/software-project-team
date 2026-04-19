@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "name": "software-project-team",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "13 specialized agents for production-grade full-stack software projects: .NET 9 API + Flutter + React + Postgres + RabbitMQ + Redis + Elasticsearch + MinIO.",
   "author": {
     "name": "AgentTeamLand",
