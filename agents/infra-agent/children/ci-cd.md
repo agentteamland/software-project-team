@@ -84,13 +84,13 @@ jobs:
             nuget-${{ runner.os }}-
 
       - name: Restore dependencies
-        run: dotnet restore WalkingForMe.sln
+        run: dotnet restore ExampleApp.sln
 
       - name: Build
-        run: dotnet build WalkingForMe.sln --no-restore --configuration Release
+        run: dotnet build ExampleApp.sln --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test WalkingForMe.sln --no-build --configuration Release --verbosity normal
+        run: dotnet test ExampleApp.sln --no-build --configuration Release --verbosity normal
         env:
           ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=testdb;Username=testuser;Password=testpassword"
           Redis__ConnectionString: "localhost:6379"
@@ -113,7 +113,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ${{ github.repository_owner }}/walkingforme
+  IMAGE_PREFIX: ${{ github.repository_owner }}/example-app
 
 jobs:
   build-and-push:
@@ -126,19 +126,19 @@ jobs:
       matrix:
         service:
           - name: api
-            dockerfile: src/WalkingForMe.Api/Dockerfile
+            dockerfile: src/ExampleApp.Api/Dockerfile
             context: .
           - name: socket
-            dockerfile: src/WalkingForMe.Socket/Dockerfile
+            dockerfile: src/ExampleApp.Socket/Dockerfile
             context: .
           - name: worker
-            dockerfile: src/WalkingForMe.Worker/Dockerfile
+            dockerfile: src/ExampleApp.Worker/Dockerfile
             context: .
           - name: log-ingest
-            dockerfile: src/WalkingForMe.LogIngest/Dockerfile
+            dockerfile: src/ExampleApp.LogIngest/Dockerfile
             context: .
           - name: mail-sender
-            dockerfile: src/WalkingForMe.MailSender/Dockerfile
+            dockerfile: src/ExampleApp.MailSender/Dockerfile
             context: .
 
     steps:
@@ -216,7 +216,7 @@ jobs:
           username: ${{ secrets.STAGING_USER }}
           key: ${{ secrets.STAGING_SSH_KEY }}
           script: |
-            cd /opt/walkingforme
+            cd /opt/example-app
             docker compose pull
             docker compose up -d --remove-orphans
             docker image prune -f
@@ -236,7 +236,7 @@ jobs:
           username: ${{ secrets.PRODUCTION_USER }}
           key: ${{ secrets.PRODUCTION_SSH_KEY }}
           script: |
-            cd /opt/walkingforme
+            cd /opt/example-app
             docker compose -f docker-compose.yml -f docker-compose.prod.yml pull
             docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --remove-orphans
             docker image prune -f
@@ -275,11 +275,11 @@ strategy:
   matrix:
     service:
       - name: api
-        dockerfile: src/WalkingForMe.Api/Dockerfile
+        dockerfile: src/ExampleApp.Api/Dockerfile
         context: .
 ```
 
-- Each service gets its own image: `ghcr.io/owner/walkingforme-api`
+- Each service gets its own image: `ghcr.io/owner/example-app-api`
 - Parallel builds -- all services build simultaneously
 - Independent tagging -- each service has its own version lifecycle
 - Shared context (`.`) because projects reference each other via solution
@@ -294,8 +294,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY . .
 RUN dotnet restore
-RUN dotnet publish src/WalkingForMe.Api -c Release -o /app/api
-RUN dotnet publish src/WalkingForMe.Worker -c Release -o /app/worker
+RUN dotnet publish src/ExampleApp.Api -c Release -o /app/api
+RUN dotnet publish src/ExampleApp.Worker -c Release -o /app/worker
 ```
 
 This reduces build time (single restore) but produces larger intermediate images.
@@ -356,7 +356,7 @@ Replace the GHCR login step:
 # And change the image prefix:
 env:
   REGISTRY: docker.io
-  IMAGE_PREFIX: yourusername/walkingforme
+  IMAGE_PREFIX: yourusername/example-app
 ```
 
 ## Health Check After Deploy

@@ -34,25 +34,25 @@ ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/{ProjectName}.{ServiceNa
 ### Concrete Example (API)
 
 ```dockerfile
-# src/WalkingForMe.Api/Dockerfile.dev
+# src/ExampleApp.Api/Dockerfile.dev
 FROM mcr.microsoft.com/dotnet/sdk:9.0
 
 WORKDIR /src
 
-COPY src/WalkingForMe.Domain/*.csproj src/WalkingForMe.Domain/
-COPY src/WalkingForMe.Application/*.csproj src/WalkingForMe.Application/
-COPY src/WalkingForMe.Infrastructure/*.csproj src/WalkingForMe.Infrastructure/
-COPY src/WalkingForMe.Logging/*.csproj src/WalkingForMe.Logging/
-COPY src/WalkingForMe.Api/*.csproj src/WalkingForMe.Api/
-COPY src/WalkingForMe.Socket/*.csproj src/WalkingForMe.Socket/
-COPY src/WalkingForMe.Worker/*.csproj src/WalkingForMe.Worker/
-COPY src/WalkingForMe.LogIngest/*.csproj src/WalkingForMe.LogIngest/
-COPY src/WalkingForMe.MailSender/*.csproj src/WalkingForMe.MailSender/
-COPY WalkingForMe.sln .
+COPY src/ExampleApp.Domain/*.csproj src/ExampleApp.Domain/
+COPY src/ExampleApp.Application/*.csproj src/ExampleApp.Application/
+COPY src/ExampleApp.Infrastructure/*.csproj src/ExampleApp.Infrastructure/
+COPY src/ExampleApp.Logging/*.csproj src/ExampleApp.Logging/
+COPY src/ExampleApp.Api/*.csproj src/ExampleApp.Api/
+COPY src/ExampleApp.Socket/*.csproj src/ExampleApp.Socket/
+COPY src/ExampleApp.Worker/*.csproj src/ExampleApp.Worker/
+COPY src/ExampleApp.LogIngest/*.csproj src/ExampleApp.LogIngest/
+COPY src/ExampleApp.MailSender/*.csproj src/ExampleApp.MailSender/
+COPY ExampleApp.sln .
 
 RUN dotnet restore
 
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/WalkingForMe.Api/WalkingForMe.Api.csproj", "--urls", "http://0.0.0.0:3000"]
+ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/ExampleApp.Api/ExampleApp.Api.csproj", "--urls", "http://0.0.0.0:3000"]
 ```
 
 ### Why Copy ALL .csproj Files?
@@ -66,7 +66,7 @@ In the dev pattern, source code is mounted as a volume in docker-compose.yml:
 ```yaml
 volumes:
   - ./src:/src/src                    # Real source code from host
-  - ./WalkingForMe.sln:/src/WalkingForMe.sln
+  - ./ExampleApp.sln:/src/ExampleApp.sln
 ```
 
 This means:
@@ -81,14 +81,14 @@ For services that expose HTTP (API, Socket), add `--urls` to the entrypoint:
 
 ```dockerfile
 # Web host (API, Socket)
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/WalkingForMe.Api/WalkingForMe.Api.csproj", "--urls", "http://0.0.0.0:3000"]
+ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/ExampleApp.Api/ExampleApp.Api.csproj", "--urls", "http://0.0.0.0:3000"]
 ```
 
 For background services (Worker, Consumer), no `--urls` needed:
 
 ```dockerfile
 # Non-web host (Worker, LogIngest, MailSender)
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/WalkingForMe.Worker/WalkingForMe.Worker.csproj"]
+ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/ExampleApp.Worker/ExampleApp.Worker.csproj"]
 ```
 
 ---
@@ -142,22 +142,22 @@ ENTRYPOINT ["dotnet", "{ProjectName}.{ServiceName}.dll"]
 ### Concrete Example (API)
 
 ```dockerfile
-# src/WalkingForMe.Api/Dockerfile
+# src/ExampleApp.Api/Dockerfile
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-COPY src/WalkingForMe.Domain/*.csproj src/WalkingForMe.Domain/
-COPY src/WalkingForMe.Application/*.csproj src/WalkingForMe.Application/
-COPY src/WalkingForMe.Infrastructure/*.csproj src/WalkingForMe.Infrastructure/
-COPY src/WalkingForMe.Logging/*.csproj src/WalkingForMe.Logging/
-COPY src/WalkingForMe.Api/*.csproj src/WalkingForMe.Api/
-COPY WalkingForMe.sln .
+COPY src/ExampleApp.Domain/*.csproj src/ExampleApp.Domain/
+COPY src/ExampleApp.Application/*.csproj src/ExampleApp.Application/
+COPY src/ExampleApp.Infrastructure/*.csproj src/ExampleApp.Infrastructure/
+COPY src/ExampleApp.Logging/*.csproj src/ExampleApp.Logging/
+COPY src/ExampleApp.Api/*.csproj src/ExampleApp.Api/
+COPY ExampleApp.sln .
 
-RUN dotnet restore "src/WalkingForMe.Api/WalkingForMe.Api.csproj"
+RUN dotnet restore "src/ExampleApp.Api/ExampleApp.Api.csproj"
 
 COPY src/ src/
 
-RUN dotnet publish "src/WalkingForMe.Api/WalkingForMe.Api.csproj" \
+RUN dotnet publish "src/ExampleApp.Api/ExampleApp.Api.csproj" \
     -c Release \
     -o /app/publish \
     --no-restore
@@ -172,7 +172,7 @@ COPY --from=build /app/publish .
 
 EXPOSE 3000
 
-ENTRYPOINT ["dotnet", "WalkingForMe.Api.dll"]
+ENTRYPOINT ["dotnet", "ExampleApp.Api.dll"]
 ```
 
 ### Non-Web Host Production Dockerfile

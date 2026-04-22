@@ -34,7 +34,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
-namespace WalkingForMe.Socket.Hubs;
+namespace ExampleApp.Socket.Hubs;
 
 [Authorize]
 public sealed class NotificationHub : Hub

@@ -42,7 +42,7 @@ User closes Tab 2:
 ## IConnectionTracker Interface
 
 ```csharp
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public interface IConnectionTracker
 {
@@ -59,7 +59,7 @@ public interface IConnectionTracker
 ```csharp
 using StackExchange.Redis;
 
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public sealed class ConnectionTracker : IConnectionTracker
 {
@@ -154,9 +154,9 @@ public sealed class ConnectionTracker : IConnectionTracker
 ```csharp
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using WalkingForMe.Socket.Services;
+using ExampleApp.Socket.Services;
 
-namespace WalkingForMe.Socket.Hubs;
+namespace ExampleApp.Socket.Hubs;
 
 [Authorize]
 public sealed class NotificationHub : Hub

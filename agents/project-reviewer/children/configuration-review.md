@@ -33,14 +33,14 @@ Each entry in `.env.example` should have:
 
 ```env
 # PostgreSQL connection
-POSTGRES_USER=walkingforme
+POSTGRES_USER=example_app
 POSTGRES_PASSWORD=your_password_here
-POSTGRES_DB=walkingforme
+POSTGRES_DB=example_app
 
 # JWT Configuration
 JWT_SECRET=your_jwt_secret_at_least_32_characters
-JWT_ISSUER=walkingforme
-JWT_AUDIENCE=walkingforme-clients
+JWT_ISSUER=example-app
+JWT_AUDIENCE=example-app-clients
 ```
 
 ### Common Findings

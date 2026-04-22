@@ -95,7 +95,7 @@ Project conventions always take precedence over general rules.
 
 - Namespace matches folder structure exactly
 - Pattern: `{Project}.{Layer}.{Feature}.{SubFeature}`
-- Example: `WalkingForMe.Application.Features.Users.Commands.CreateUser`
+- Example: `ExampleApp.Application.Features.Users.Commands.CreateUser`
 
 ### Red Flags
 

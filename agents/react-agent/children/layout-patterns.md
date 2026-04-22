@@ -142,7 +142,7 @@ export function Sidebar() {
             W
           </div>
         ) : (
-          <span className="text-lg font-bold text-gray-900">WalkingForMe</span>
+          <span className="text-lg font-bold text-gray-900">ExampleApp</span>
         )}
       </div>
 
@@ -329,7 +329,7 @@ export function MobileDrawer() {
         <Dialog.Content className="fixed left-0 top-0 z-50 h-full w-72 bg-white shadow-xl lg:hidden data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left duration-300">
           {/* Header */}
           <div className="flex h-16 items-center justify-between border-b px-4">
-            <span className="text-lg font-bold text-gray-900">WalkingForMe</span>
+            <span className="text-lg font-bold text-gray-900">ExampleApp</span>
             <Dialog.Close asChild>
               <button className="rounded-md p-1 text-gray-400 hover:text-gray-600" aria-label="Close menu">
                 <X className="h-5 w-5" />

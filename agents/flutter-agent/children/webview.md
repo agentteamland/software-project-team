@@ -203,7 +203,7 @@ class _Payment3dsScreenState extends State<Payment3dsScreen> {
 
   bool _isAllowedDomain(String host) {
     const allowedDomains = [
-      'walkingforme.com',
+      'example-app.com',
       'bank.example.com',
       'secure.payment-provider.com',
       'acs.3dsecure.com',

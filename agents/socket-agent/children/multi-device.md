@@ -36,7 +36,7 @@ By default, SignalR uses `ClaimTypes.NameIdentifier` from the JWT claims. If you
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 /// <summary>
 /// Extracts the userId from JWT claims for SignalR user-level broadcasting.
@@ -299,7 +299,7 @@ builder.Services.AddSignalR()
         options =>
         {
             options.Configuration.ChannelPrefix =
-                RedisChannel.Literal("WalkingForMe:SignalR:");
+                RedisChannel.Literal("ExampleApp:SignalR:");
         });
 ```
 

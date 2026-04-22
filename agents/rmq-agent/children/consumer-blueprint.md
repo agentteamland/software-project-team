@@ -16,7 +16,7 @@ src/{ProjectName}.{ConsumerName}/
 
 | Item | Pattern | Example |
 |------|---------|---------|
-| Project | `{ProjectName}.{ConsumerName}` | `WalkingForMe.MailSender` |
+| Project | `{ProjectName}.{ConsumerName}` | `ExampleApp.MailSender` |
 | Consumer class | `{Purpose}Consumer` | `EmailConsumer` |
 | Exchange | `{purpose}.{type}` | `emails.fanout` |
 | Queue | `{purpose}.{consumer}` | `emails.smtp` |

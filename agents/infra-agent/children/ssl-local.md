@@ -118,7 +118,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: src/WalkingForMe.Api/Dockerfile.dev
+      dockerfile: src/ExampleApp.Api/Dockerfile.dev
     container_name: ${PROJECT_PREFIX}-api
     labels:
       - "traefik.enable=true"

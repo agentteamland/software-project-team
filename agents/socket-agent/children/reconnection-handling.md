@@ -101,7 +101,7 @@ For chat-like applications where message ordering and completeness are critical.
 using StackExchange.Redis;
 using System.Text.Json;
 
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public interface IMissedEventStore
 {

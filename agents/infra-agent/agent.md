@@ -130,7 +130,7 @@ PostgreSQL pg_dump/pg_restore for database backup. Volume backup for persistent 
 ---
 
 ### Multi-Project Coexistence
-Multiple projects on the same machine (PG + walkingforme). Port offset strategy (project B = default + 10000). Container naming convention prevents conflicts. Network isolation. Shared vs isolated infrastructure services.
+Multiple projects on the same machine (ExampleApp + AdminApp). Port offset strategy (project B = default + 10000). Container naming convention prevents conflicts. Network isolation. Shared vs isolated infrastructure services.
 → [Details](children/multi-project.md)
 
 ---

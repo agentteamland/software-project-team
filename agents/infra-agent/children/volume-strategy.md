@@ -12,21 +12,21 @@ Four distinct volume types serve different purposes. Understanding when to use e
 # docker-compose.yml — shadow volumes for the API service
 volumes:
   - ./src:/src/src                              # Source code mounted from host
-  - api_bin:/src/src/WalkingForMe.Api/bin       # Shadows host's bin/
-  - api_obj:/src/src/WalkingForMe.Api/obj       # Shadows host's obj/
+  - api_bin:/src/src/ExampleApp.Api/bin       # Shadows host's bin/
+  - api_obj:/src/src/ExampleApp.Api/obj       # Shadows host's obj/
 ```
 
 ### How It Works
 
 ```
 Host filesystem (macOS):
-  src/WalkingForMe.Api/
+  src/ExampleApp.Api/
     ├── bin/         ← macOS build artifacts (if any)
     ├── obj/         ← macOS restore artifacts
     └── Program.cs   ← source code
 
 Container filesystem (Linux):
-  /src/src/WalkingForMe.Api/
+  /src/src/ExampleApp.Api/
     ├── bin/         ← Docker volume (api_bin) — Linux artifacts only
     ├── obj/         ← Docker volume (api_obj) — Linux artifacts only
     └── Program.cs   ← mounted from host via ./src:/src/src
@@ -40,14 +40,14 @@ The source files come from the host mount. The bin/obj directories come from the
 
 ```yaml
 # API service references these shared projects:
-- domain_bin:/src/src/WalkingForMe.Domain/bin
-- domain_obj:/src/src/WalkingForMe.Domain/obj
-- app_bin:/src/src/WalkingForMe.Application/bin
-- app_obj:/src/src/WalkingForMe.Application/obj
-- infra_bin:/src/src/WalkingForMe.Infrastructure/bin
-- infra_obj:/src/src/WalkingForMe.Infrastructure/obj
-- logging_bin:/src/src/WalkingForMe.Logging/bin
-- logging_obj:/src/src/WalkingForMe.Logging/obj
+- domain_bin:/src/src/ExampleApp.Domain/bin
+- domain_obj:/src/src/ExampleApp.Domain/obj
+- app_bin:/src/src/ExampleApp.Application/bin
+- app_obj:/src/src/ExampleApp.Application/obj
+- infra_bin:/src/src/ExampleApp.Infrastructure/bin
+- infra_obj:/src/src/ExampleApp.Infrastructure/obj
+- logging_bin:/src/src/ExampleApp.Logging/bin
+- logging_obj:/src/src/ExampleApp.Logging/obj
 ```
 
 2. **Shared project volumes are reused across services.** Multiple services can mount `domain_bin:` — Docker named volumes support concurrent access. This means Domain is compiled once, and all services share the compiled output.
@@ -135,7 +135,7 @@ docker compose down              # Volumes survive
 docker compose down -v           # Volumes destroyed — full reset
 
 # Remove a specific volume:
-docker volume rm walkingforme_postgres_data
+docker volume rm example_app_postgres_data
 ```
 
 ### Naming Convention
@@ -164,7 +164,7 @@ docker volume rm walkingforme_postgres_data
 ```yaml
 volumes:
   - ./src:/src/src                                  # All source projects
-  - ./WalkingForMe.sln:/src/WalkingForMe.sln        # Solution file
+  - ./ExampleApp.sln:/src/ExampleApp.sln        # Solution file
 ```
 
 ### Bind Mounts vs Named Volumes
@@ -232,7 +232,7 @@ volumes:
 
 ```bash
 # See all volumes for this project
-docker volume ls | grep walkingforme
+docker volume ls | grep example_app
 
 # Nuclear reset: remove everything (data, caches, build artifacts)
 docker compose down -v

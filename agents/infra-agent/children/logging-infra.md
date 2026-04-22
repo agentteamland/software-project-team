@@ -134,7 +134,7 @@ If LogIngest uses the same Serilog -> RMQ pipeline, it creates an infinite loop:
 log-ingest:
   build:
     context: .
-    dockerfile: src/WalkingForMe.LogIngest/Dockerfile.dev
+    dockerfile: src/ExampleApp.LogIngest/Dockerfile.dev
   container_name: ${PROJECT_PREFIX}-log-ingest
   environment:
     - ASPNETCORE_ENVIRONMENT=Development
@@ -353,7 +353,7 @@ kibana:
 log-ingest:
   build:
     context: .
-    dockerfile: src/WalkingForMe.LogIngest/Dockerfile.dev
+    dockerfile: src/ExampleApp.LogIngest/Dockerfile.dev
   container_name: ${PROJECT_PREFIX}-log-ingest
   environment:
     - ASPNETCORE_ENVIRONMENT=Development

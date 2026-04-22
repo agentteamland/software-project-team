@@ -166,22 +166,22 @@ Scenario: Adding a `NotificationSender` service that consumes from RabbitMQ and 
 ### Step 1: Create Dockerfile.dev
 
 ```dockerfile
-# src/WalkingForMe.NotificationSender/Dockerfile.dev
+# src/ExampleApp.NotificationSender/Dockerfile.dev
 FROM mcr.microsoft.com/dotnet/sdk:9.0
 
 WORKDIR /src
 
 # Copy all .csproj files for restore layer caching
-COPY src/WalkingForMe.Domain/*.csproj src/WalkingForMe.Domain/
-COPY src/WalkingForMe.Application/*.csproj src/WalkingForMe.Application/
-COPY src/WalkingForMe.Infrastructure/*.csproj src/WalkingForMe.Infrastructure/
-COPY src/WalkingForMe.Logging/*.csproj src/WalkingForMe.Logging/
-COPY src/WalkingForMe.NotificationSender/*.csproj src/WalkingForMe.NotificationSender/
-COPY WalkingForMe.sln .
+COPY src/ExampleApp.Domain/*.csproj src/ExampleApp.Domain/
+COPY src/ExampleApp.Application/*.csproj src/ExampleApp.Application/
+COPY src/ExampleApp.Infrastructure/*.csproj src/ExampleApp.Infrastructure/
+COPY src/ExampleApp.Logging/*.csproj src/ExampleApp.Logging/
+COPY src/ExampleApp.NotificationSender/*.csproj src/ExampleApp.NotificationSender/
+COPY ExampleApp.sln .
 
 RUN dotnet restore
 
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/WalkingForMe.NotificationSender/WalkingForMe.NotificationSender.csproj"]
+ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/ExampleApp.NotificationSender/ExampleApp.NotificationSender.csproj"]
 ```
 
 ### Step 2: Add Service to docker-compose.yml
@@ -190,7 +190,7 @@ ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/WalkingForMe.Notificatio
   notification-sender:
     build:
       context: .
-      dockerfile: src/WalkingForMe.NotificationSender/Dockerfile.dev
+      dockerfile: src/ExampleApp.NotificationSender/Dockerfile.dev
     container_name: wfm-notification-sender
     restart: unless-stopped
     environment:
@@ -201,17 +201,17 @@ ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/WalkingForMe.Notificatio
       Firebase__CredentialsPath: /run/secrets/firebase.json
     volumes:
       - ./src:/src/src
-      - ./WalkingForMe.sln:/src/WalkingForMe.sln
-      - notificationsender_bin:/src/src/WalkingForMe.NotificationSender/bin
-      - notificationsender_obj:/src/src/WalkingForMe.NotificationSender/obj
-      - domain_bin:/src/src/WalkingForMe.Domain/bin
-      - domain_obj:/src/src/WalkingForMe.Domain/obj
-      - app_bin:/src/src/WalkingForMe.Application/bin
-      - app_obj:/src/src/WalkingForMe.Application/obj
-      - infra_bin:/src/src/WalkingForMe.Infrastructure/bin
-      - infra_obj:/src/src/WalkingForMe.Infrastructure/obj
-      - logging_bin:/src/src/WalkingForMe.Logging/bin
-      - logging_obj:/src/src/WalkingForMe.Logging/obj
+      - ./ExampleApp.sln:/src/ExampleApp.sln
+      - notificationsender_bin:/src/src/ExampleApp.NotificationSender/bin
+      - notificationsender_obj:/src/src/ExampleApp.NotificationSender/obj
+      - domain_bin:/src/src/ExampleApp.Domain/bin
+      - domain_obj:/src/src/ExampleApp.Domain/obj
+      - app_bin:/src/src/ExampleApp.Application/bin
+      - app_obj:/src/src/ExampleApp.Application/obj
+      - infra_bin:/src/src/ExampleApp.Infrastructure/bin
+      - infra_obj:/src/src/ExampleApp.Infrastructure/obj
+      - logging_bin:/src/src/ExampleApp.Logging/bin
+      - logging_obj:/src/src/ExampleApp.Logging/obj
       - nuget_notificationsender:/root/.nuget/packages
     depends_on:
       rabbitmq:

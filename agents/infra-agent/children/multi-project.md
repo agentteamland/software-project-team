@@ -5,7 +5,7 @@ Running multiple Docker Compose projects on the same development machine without
 ## The Problem
 
 Developer works on two projects:
-- **WalkingForMe** (wfm): PostgreSQL, Redis, RabbitMQ, Elasticsearch
+- **ExampleApp** (wfm): PostgreSQL, Redis, RabbitMQ, Elasticsearch
 - **PG Project** (pg): PostgreSQL, Redis, RabbitMQ, Elasticsearch
 
 Both want port 5432 (PostgreSQL), 6379 (Redis), 5672 (RabbitMQ), 9200 (Elasticsearch). Without a strategy, only one project can run at a time.
@@ -21,13 +21,13 @@ Each project gets:
 
 | Project | Prefix | Offset | PostgreSQL | Redis | RabbitMQ | ES |
 |---------|--------|--------|-----------|-------|----------|-----|
-| WalkingForMe | wfm | 0 | 5432 | 6379 | 5672 | 9200 |
+| ExampleApp | wfm | 0 | 5432 | 6379 | 5672 | 9200 |
 | PG Project | pg | +10000 | 15432 | 16379 | 15672 | 19200 |
 | Project C | c | +20000 | 25432 | 26379 | 25672 | 29200 |
 
 ## Implementation
 
-### .env for WalkingForMe (offset 0 -- defaults)
+### .env for ExampleApp (offset 0 -- defaults)
 
 ```bash
 # .env
@@ -177,7 +177,7 @@ volumes:
 ```
 
 This produces:
-- `wfm_postgres_data` for WalkingForMe
+- `wfm_postgres_data` for ExampleApp
 - `pg_postgres_data` for PG Project
 
 Without explicit names, Docker Compose uses the project directory name as prefix, which can be unpredictable.
@@ -187,7 +187,7 @@ Without explicit names, Docker Compose uses the project directory name as prefix
 Docker Compose automatically creates a network per project:
 
 ```
-walkingforme_default    (wfm services talk to each other here)
+example-app_default    (wfm services talk to each other here)
 pg-project_default      (pg services talk to each other here)
 ```
 
@@ -198,8 +198,8 @@ Services from different projects cannot reach each other by default. This is the
 Within the same Compose project, services connect by service name:
 
 ```
-# WalkingForMe API connects to its own database
-Host=db      (resolves to wfm-db within walkingforme_default network)
+# ExampleApp API connects to its own database
+Host=db      (resolves to wfm-db within example-app_default network)
 Port=5432    (default port, not the offset)
 
 # PG API connects to its own database
@@ -241,7 +241,7 @@ services:
 
 ```bash
 # Create databases for each project
-docker exec shared-db createdb -U admin walkingforme
+docker exec shared-db createdb -U admin example-app
 docker exec shared-db createdb -U admin pg_project
 ```
 
@@ -253,7 +253,7 @@ Keep a reference card in each project's `.env.example`:
 
 ```bash
 # ==========================================
-# PORT REFERENCE (WalkingForMe, offset: 0)
+# PORT REFERENCE (ExampleApp, offset: 0)
 # ==========================================
 # API:                 http://localhost:3000
 # API Swagger:         http://localhost:3000/swagger
@@ -295,8 +295,8 @@ Keep a reference card in each project's `.env.example`:
 ## Switching Between Projects
 
 ```bash
-# Terminal 1: WalkingForMe
-cd ~/projects/walkingforme && docker compose up
+# Terminal 1: ExampleApp
+cd ~/projects/example-app && docker compose up
 
 # Terminal 2: PG Project
 cd ~/projects/pg-project && docker compose up
@@ -308,7 +308,7 @@ cd ~/projects/pg-project && docker compose up
 
 ```bash
 # Stop one project
-cd ~/projects/walkingforme && docker compose down
+cd ~/projects/example-app && docker compose down
 
 # Stop all Docker containers (nuclear option)
 docker stop $(docker ps -q)

@@ -68,8 +68,8 @@ public abstract class TenantBase : BaseEntity, IAuditableEntity
 
 | Project Type | Tenant Entity | Example |
 |-------------|---------------|---------|
-| Simple B2C (walkingforme) | *(none — SaaS disabled)* | User only |
-| B2B2C (ProductGlitz) | `Dealer` | Dealer → Customer profiles |
+| Simple B2C (pedometer app) | *(none — SaaS disabled)* | User only |
+| B2B2C (prior SaaS reference) | `Dealer` | Dealer → Customer profiles |
 | Marketplace (trendyol-like) | `Seller` | Seller → shop employees + buyers |
 | Enterprise SaaS (slack-like) | `Organization` | Organization → members |
 

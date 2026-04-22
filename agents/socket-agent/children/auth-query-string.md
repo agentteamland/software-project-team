@@ -49,8 +49,8 @@ using Microsoft.IdentityModel.Tokens;
 // JWT secret MUST match the API's JWT secret — same tokens, same validation
 var jwtSecret = builder.Configuration["Jwt:Secret"]
     ?? "super-secret-key-that-should-be-at-least-32-chars-long!";
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "WalkingForMe";
-var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "WalkingForMe";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "ExampleApp";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "ExampleApp";
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -118,14 +118,14 @@ services:
   api:
     environment:
       - Jwt__Secret=${JWT_SECRET}
-      - Jwt__Issuer=WalkingForMe
-      - Jwt__Audience=WalkingForMe
+      - Jwt__Issuer=ExampleApp
+      - Jwt__Audience=ExampleApp
   
   socket:
     environment:
       - Jwt__Secret=${JWT_SECRET}
-      - Jwt__Issuer=WalkingForMe
-      - Jwt__Audience=WalkingForMe
+      - Jwt__Issuer=ExampleApp
+      - Jwt__Audience=ExampleApp
 ```
 
 ## Accessing User Identity in Hub

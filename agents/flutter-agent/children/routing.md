@@ -59,7 +59,7 @@ class App extends ConsumerWidget {
 
     return MaterialApp.router(
       routerConfig: router,
-      title: 'WalkingForMe',
+      title: 'ExampleApp',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: ref.watch(themeModeProvider),
@@ -422,8 +422,8 @@ if (from != null) {
 go_router handles deep links automatically when routes are defined. The URL structure maps directly to routes:
 
 ```
-walkingforme://app/walks/abc-123       -> WalkDetailScreen(walkId: 'abc-123')
-walkingforme://app/auth/verify-email?token=xyz -> VerifyEmailScreen(token: 'xyz')
+example-app://app/walks/abc-123       -> WalkDetailScreen(walkId: 'abc-123')
+example-app://app/auth/verify-email?token=xyz -> VerifyEmailScreen(token: 'xyz')
 ```
 
 Platform configuration (iOS `apple-app-site-association`, Android `assetlinks.json`) is separate from routing code.

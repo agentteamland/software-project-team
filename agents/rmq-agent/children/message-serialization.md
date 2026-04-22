@@ -104,7 +104,7 @@ var props = new BasicProperties
 
     // Recommended
     Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds()),
-    AppId = "walkingforme-api",                // Identifies the publisher
+    AppId = "example-app-api",                 // Identifies the publisher
     Type = "email.send",                       // Message type (mirrors envelope)
 
     // Optional

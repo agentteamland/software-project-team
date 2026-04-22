@@ -50,7 +50,7 @@ Pick a base offset for each project. All ports in that project are shifted by th
 
 | Project | Offset | PostgreSQL | API | Socket | RabbitMQ | Redis | Elasticsearch |
 |---------|--------|-----------|-----|--------|----------|-------|--------------|
-| WalkingForMe | 0 | 5432 | 3000 | 3002 | 5672 | 6379 | 9200 |
+| ExampleApp | 0 | 5432 | 3000 | 3002 | 5672 | 6379 | 9200 |
 | Project B | +10000 | 15432 | 13000 | 13002 | 15672 | 16379 | 19200 |
 | Project C | +20000 | 25432 | 23000 | 23002 | 25672 | 26379 | 29200 |
 
@@ -81,7 +81,7 @@ Since docker-compose.yml uses `${VAR:-default}`, changing the .env file is all t
 Ports alone are not enough. Container names must also be unique across projects. Each project uses a prefix:
 
 ```yaml
-# WalkingForMe
+# ExampleApp
 container_name: wfm-api
 container_name: wfm-db
 

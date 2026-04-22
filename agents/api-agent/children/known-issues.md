@@ -4,7 +4,7 @@ Issues discovered during real project scaffolding and development. These must be
 
 ## EF Core Relational Package Must Be Explicit
 
-**Discovered:** 2026-04-15 during WalkingForMe scaffolding
+**Discovered:** 2026-04-15 during reference-project scaffolding
 
 **Problem:** `Npgsql.EntityFrameworkCore.PostgreSQL` should transitively bring `Microsoft.EntityFrameworkCore.Relational`, but in .NET 9 a version mismatch can occur causing `FileNotFoundException: Could not load file or assembly 'Microsoft.EntityFrameworkCore.Relational'` at startup during migration.
 
@@ -20,7 +20,7 @@ Issues discovered during real project scaffolding and development. These must be
 
 ## MinIO Init Container Shows as "Exited"
 
-**Discovered:** 2026-04-15 during WalkingForMe scaffolding
+**Discovered:** 2026-04-15 during reference-project scaffolding
 
 **Problem:** `wfm-minio-init` container appears as "exited" in Docker Desktop, which can cause concern. This is normal behavior — it's a one-shot init container that creates the default bucket and then exits.
 

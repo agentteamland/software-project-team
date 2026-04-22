@@ -15,9 +15,9 @@ Every hub:
 ```csharp
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using WalkingForMe.Socket.Services;
+using ExampleApp.Socket.Services;
 
-namespace WalkingForMe.Socket.Hubs;
+namespace ExampleApp.Socket.Hubs;
 
 [Authorize]
 public sealed class NotificationHub : Hub
@@ -202,7 +202,7 @@ var data = await response.Content.ReadFromJsonAsync<SomeDto>()
 Hub methods use simple record DTOs for deserialization. These live in the Socket project — they are lightweight mirrors of API responses, not shared contracts.
 
 ```csharp
-namespace WalkingForMe.Socket.Hubs;
+namespace ExampleApp.Socket.Hubs;
 
 public sealed record MessageDto(Guid Id, string Content, string SenderId, DateTime CreatedAt);
 public sealed record UnreadCountDto(int Count);

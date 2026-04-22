@@ -19,12 +19,12 @@ Every service in the stack supports live code reloading during development. Edit
 api:
   build:
     context: .
-    dockerfile: src/WalkingForMe.Api/Dockerfile.dev
+    dockerfile: src/ExampleApp.Api/Dockerfile.dev
   volumes:
     - ./src:/src/src                              # Source code from host
-    - ./WalkingForMe.sln:/src/WalkingForMe.sln    # Solution file
-    - api_bin:/src/src/WalkingForMe.Api/bin        # Shadow volume (isolation)
-    - api_obj:/src/src/WalkingForMe.Api/obj        # Shadow volume (isolation)
+    - ./ExampleApp.sln:/src/ExampleApp.sln    # Solution file
+    - api_bin:/src/src/ExampleApp.Api/bin        # Shadow volume (isolation)
+    - api_obj:/src/src/ExampleApp.Api/obj        # Shadow volume (isolation)
     - nuget_api:/root/.nuget/packages             # NuGet cache (persistence)
 ```
 
@@ -34,13 +34,13 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0
 WORKDIR /src
 
 # Copy csproj + restore (cached layer)
-COPY src/WalkingForMe.Domain/*.csproj src/WalkingForMe.Domain/
+COPY src/ExampleApp.Domain/*.csproj src/ExampleApp.Domain/
 # ... (all projects)
-COPY WalkingForMe.sln .
+COPY ExampleApp.sln .
 RUN dotnet restore
 
 # Source is NOT copied — mounted at runtime
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/WalkingForMe.Api/WalkingForMe.Api.csproj", "--urls", "http://0.0.0.0:3000"]
+ENTRYPOINT ["dotnet", "watch", "run", "--project", "src/ExampleApp.Api/ExampleApp.Api.csproj", "--urls", "http://0.0.0.0:3000"]
 ```
 
 ### What Triggers Recompilation
@@ -256,7 +256,7 @@ Docker Desktop for macOS handles file watching through its filesystem sync layer
 
 ```bash
 # Verify the file exists inside the container:
-docker compose exec api cat src/WalkingForMe.Api/Program.cs
+docker compose exec api cat src/ExampleApp.Api/Program.cs
 
 # If the file content does not match your local file, the volume mount is wrong
 ```

@@ -123,7 +123,7 @@ The client can use `eventId` to deduplicate if the same event arrives both live 
 All event payloads live in a shared contracts directory:
 
 ```
-src/WalkingForMe.Socket/
+src/ExampleApp.Socket/
     Contracts/
         Events/
             Walk/
@@ -142,7 +142,7 @@ src/WalkingForMe.Socket/
 
 ```csharp
 // Contracts/Events/Walk/WalkStartedEvent.cs
-namespace WalkingForMe.Socket.Contracts.Events.Walk;
+namespace ExampleApp.Socket.Contracts.Events.Walk;
 
 public sealed record WalkStartedEvent
 {
@@ -156,7 +156,7 @@ public sealed record WalkStartedEvent
 
 ```csharp
 // Contracts/Events/Walk/WalkCompletedEvent.cs
-namespace WalkingForMe.Socket.Contracts.Events.Walk;
+namespace ExampleApp.Socket.Contracts.Events.Walk;
 
 public sealed record WalkCompletedEvent
 {
@@ -173,7 +173,7 @@ public sealed record WalkCompletedEvent
 
 ```csharp
 // Contracts/Events/Chat/ChatMessageReceivedEvent.cs
-namespace WalkingForMe.Socket.Contracts.Events.Chat;
+namespace ExampleApp.Socket.Contracts.Events.Chat;
 
 public sealed record ChatMessageReceivedEvent
 {
@@ -190,7 +190,7 @@ public sealed record ChatMessageReceivedEvent
 
 ```csharp
 // Contracts/Events/Notification/NotificationReceivedEvent.cs
-namespace WalkingForMe.Socket.Contracts.Events.Notification;
+namespace ExampleApp.Socket.Contracts.Events.Notification;
 
 public sealed record NotificationReceivedEvent
 {
@@ -291,7 +291,7 @@ Avoid magic strings by centralizing event names:
 
 ```csharp
 // Contracts/SocketEvents.cs
-namespace WalkingForMe.Socket.Contracts;
+namespace ExampleApp.Socket.Contracts;
 
 /// <summary>
 /// Central registry of all Socket event names.

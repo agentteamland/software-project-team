@@ -19,15 +19,15 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS restore
 WORKDIR /src
 
 # Copy solution and project files first (layer cache optimization)
-COPY WalkingForMe.sln ./
-COPY src/WalkingForMe.Domain/*.csproj             src/WalkingForMe.Domain/
-COPY src/WalkingForMe.Application/*.csproj         src/WalkingForMe.Application/
-COPY src/WalkingForMe.Infrastructure/*.csproj       src/WalkingForMe.Infrastructure/
-COPY src/WalkingForMe.Logging/*.csproj             src/WalkingForMe.Logging/
-COPY src/WalkingForMe.Api/*.csproj                 src/WalkingForMe.Api/
+COPY ExampleApp.sln ./
+COPY src/ExampleApp.Domain/*.csproj             src/ExampleApp.Domain/
+COPY src/ExampleApp.Application/*.csproj         src/ExampleApp.Application/
+COPY src/ExampleApp.Infrastructure/*.csproj       src/ExampleApp.Infrastructure/
+COPY src/ExampleApp.Logging/*.csproj             src/ExampleApp.Logging/
+COPY src/ExampleApp.Api/*.csproj                 src/ExampleApp.Api/
 
 # Restore NuGet packages (this layer is cached until a .csproj changes)
-RUN dotnet restore src/WalkingForMe.Api/WalkingForMe.Api.csproj
+RUN dotnet restore src/ExampleApp.Api/ExampleApp.Api.csproj
 
 # ============================================================
 # Stage 2: Build & Publish
@@ -39,7 +39,7 @@ WORKDIR /src
 COPY src/ src/
 
 # Publish in Release mode
-RUN dotnet publish src/WalkingForMe.Api/WalkingForMe.Api.csproj \
+RUN dotnet publish src/ExampleApp.Api/ExampleApp.Api.csproj \
     -c Release \
     -o /app/publish \
     --no-restore
@@ -76,7 +76,7 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
     CMD curl -sf http://localhost:8080/health || exit 1
 
 # Exec form entrypoint (no shell wrapping, proper signal handling)
-ENTRYPOINT ["dotnet", "WalkingForMe.Api.dll"]
+ENTRYPOINT ["dotnet", "ExampleApp.Api.dll"]
 ```
 
 ## Stage-by-Stage Breakdown
@@ -87,14 +87,14 @@ ENTRYPOINT ["dotnet", "WalkingForMe.Api.dll"]
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS restore
 WORKDIR /src
 
-COPY WalkingForMe.sln ./
-COPY src/WalkingForMe.Domain/*.csproj             src/WalkingForMe.Domain/
-COPY src/WalkingForMe.Application/*.csproj         src/WalkingForMe.Application/
-COPY src/WalkingForMe.Infrastructure/*.csproj       src/WalkingForMe.Infrastructure/
-COPY src/WalkingForMe.Logging/*.csproj             src/WalkingForMe.Logging/
-COPY src/WalkingForMe.Api/*.csproj                 src/WalkingForMe.Api/
+COPY ExampleApp.sln ./
+COPY src/ExampleApp.Domain/*.csproj             src/ExampleApp.Domain/
+COPY src/ExampleApp.Application/*.csproj         src/ExampleApp.Application/
+COPY src/ExampleApp.Infrastructure/*.csproj       src/ExampleApp.Infrastructure/
+COPY src/ExampleApp.Logging/*.csproj             src/ExampleApp.Logging/
+COPY src/ExampleApp.Api/*.csproj                 src/ExampleApp.Api/
 
-RUN dotnet restore src/WalkingForMe.Api/WalkingForMe.Api.csproj
+RUN dotnet restore src/ExampleApp.Api/ExampleApp.Api.csproj
 ```
 
 **Why copy .csproj files separately?**
@@ -155,7 +155,7 @@ EXPOSE 8080
 ```yaml
 # docker-compose.prod.yml
 api:
-  image: ghcr.io/owner/walkingforme-api:latest
+  image: ghcr.io/owner/example-app-api:latest
   ports:
     - "80:8080"      # Host port 80 maps to container port 8080
     - "443:8080"     # Or behind a reverse proxy
@@ -165,10 +165,10 @@ api:
 
 ```dockerfile
 # CORRECT: exec form
-ENTRYPOINT ["dotnet", "WalkingForMe.Api.dll"]
+ENTRYPOINT ["dotnet", "ExampleApp.Api.dll"]
 
 # WRONG: shell form (wraps in /bin/sh -c, breaks signal handling)
-# ENTRYPOINT dotnet WalkingForMe.Api.dll
+# ENTRYPOINT dotnet ExampleApp.Api.dll
 ```
 
 **Exec form** runs the process directly as PID 1 -- receives SIGTERM for graceful shutdown. **Shell form** wraps in `/bin/sh -c` which swallows signals, causing ungraceful 10-second timeout kills.
@@ -250,15 +250,15 @@ Each .NET service gets its own production Dockerfile. They share the same patter
 ### API Dockerfile
 
 ```
-src/WalkingForMe.Api/Dockerfile
-ENTRYPOINT ["dotnet", "WalkingForMe.Api.dll"]
+src/ExampleApp.Api/Dockerfile
+ENTRYPOINT ["dotnet", "ExampleApp.Api.dll"]
 ```
 
 ### Worker Dockerfile
 
 ```
-src/WalkingForMe.Worker/Dockerfile
-ENTRYPOINT ["dotnet", "WalkingForMe.Worker.dll"]
+src/ExampleApp.Worker/Dockerfile
+ENTRYPOINT ["dotnet", "ExampleApp.Worker.dll"]
 # No EXPOSE -- Worker has no HTTP endpoint
 # No HEALTHCHECK via curl -- use a different check or omit
 ```
@@ -266,8 +266,8 @@ ENTRYPOINT ["dotnet", "WalkingForMe.Worker.dll"]
 ### LogIngest Dockerfile
 
 ```
-src/WalkingForMe.LogIngest/Dockerfile
-ENTRYPOINT ["dotnet", "WalkingForMe.LogIngest.dll"]
+src/ExampleApp.LogIngest/Dockerfile
+ENTRYPOINT ["dotnet", "ExampleApp.LogIngest.dll"]
 # No EXPOSE -- LogIngest is a consumer, no HTTP
 ```
 
@@ -285,30 +285,30 @@ ENTRYPOINT ["dotnet", "WalkingForMe.LogIngest.dll"]
 
 ```bash
 # Build a single service
-docker build -t walkingforme-api:local -f src/WalkingForMe.Api/Dockerfile .
+docker build -t example-app-api:local -f src/ExampleApp.Api/Dockerfile .
 
 # Build with build arguments
 docker build \
   --build-arg DOTNET_VERSION=9.0 \
-  -t walkingforme-api:local \
-  -f src/WalkingForMe.Api/Dockerfile .
+  -t example-app-api:local \
+  -f src/ExampleApp.Api/Dockerfile .
 
 # Check image size
-docker images walkingforme-api:local
+docker images example-app-api:local
 ```
 
 ## Troubleshooting
 
-### "Could not find file WalkingForMe.sln"
+### "Could not find file ExampleApp.sln"
 
 Build context must be the project root (where the .sln is), not the service directory:
 
 ```bash
 # CORRECT: context is root, dockerfile is specified
-docker build -f src/WalkingForMe.Api/Dockerfile .
+docker build -f src/ExampleApp.Api/Dockerfile .
 
 # WRONG: context is the service directory
-docker build src/WalkingForMe.Api/
+docker build src/ExampleApp.Api/
 ```
 
 ### "Permission denied" at runtime

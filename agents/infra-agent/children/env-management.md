@@ -72,7 +72,7 @@ Connection strings are assembled inside docker-compose.yml using interpolation:
 
 ```yaml
 environment:
-  ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB:-walkingforme};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}"
+  ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB:-example_app};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}"
   ConnectionStrings__Redis: "redis:6379"
   ConnectionStrings__RabbitMq: "amqp://${RABBITMQ_DEFAULT_USER:-guest}:${RABBITMQ_DEFAULT_PASS:-guest}@rabbitmq:5672"
 ```
@@ -107,11 +107,11 @@ INTERNAL_TOKEN=internal-secret-change-in-production
 
 ```bash
 # Database name
-POSTGRES_DB=walkingforme
+POSTGRES_DB=example_app
 
 # JWT claims
-JWT_ISSUER=WalkingForMe
-JWT_AUDIENCE=WalkingForMe
+JWT_ISSUER=ExampleApp
+JWT_AUDIENCE=ExampleApp
 ```
 
 ### 3. Ports
@@ -171,7 +171,7 @@ ENABLE_RATE_LIMITING=false
 # ── PostgreSQL ──────────────────────────────────────────────────
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
-POSTGRES_DB=walkingforme
+POSTGRES_DB=example_app
 POSTGRES_PORT=5432
 
 # ── RabbitMQ ────────────────────────────────────────────────────
@@ -199,8 +199,8 @@ SOCKET_PORT=3002
 # ── JWT ─────────────────────────────────────────────────────────
 # MUST be at least 32 characters for HS256
 JWT_SECRET=super-secret-key-that-should-be-at-least-32-chars-long!
-JWT_ISSUER=WalkingForMe
-JWT_AUDIENCE=WalkingForMe
+JWT_ISSUER=ExampleApp
+JWT_AUDIENCE=ExampleApp
 
 # ── Internal Token ──────────────────────────────────────────────
 # Used for system-to-system auth (Worker->API, API->Socket)

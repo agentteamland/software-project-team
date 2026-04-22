@@ -32,7 +32,7 @@ Client                    Hub Filter                    Hub Method
 
 ```csharp
 // Services/IRateLimiter.cs
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public interface IHubRateLimiter
 {
@@ -47,7 +47,7 @@ public interface IHubRateLimiter
 // Services/RedisHubRateLimiter.cs
 using StackExchange.Redis;
 
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public sealed class RedisHubRateLimiter : IHubRateLimiter
 {
@@ -116,7 +116,7 @@ SignalR supports hub filters (similar to ASP.NET action filters). This is the cl
 // Filters/RateLimitHubFilter.cs
 using Microsoft.AspNetCore.SignalR;
 
-namespace WalkingForMe.Socket.Filters;
+namespace ExampleApp.Socket.Filters;
 
 public sealed class RateLimitHubFilter : IHubFilter
 {
@@ -250,7 +250,7 @@ If Redis is not available, use an in-memory counter. This only works for single-
 // Services/InMemoryHubRateLimiter.cs
 using System.Collections.Concurrent;
 
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public sealed class InMemoryHubRateLimiter : IHubRateLimiter
 {

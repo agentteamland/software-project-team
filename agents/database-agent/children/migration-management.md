@@ -7,27 +7,27 @@
 ```bash
 # Create a new migration
 docker compose exec api dotnet ef migrations add {MigrationName} \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project .
 
 # Apply pending migrations
 docker compose exec api dotnet ef database update \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project .
 
 # Revert to a specific migration
 docker compose exec api dotnet ef database update {TargetMigrationName} \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project .
 
 # Remove the last migration (if not yet applied)
 docker compose exec api dotnet ef migrations remove \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project .
 
 # Generate SQL script (for production review)
 docker compose exec api dotnet ef migrations script \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project . \
   --idempotent
 ```
@@ -79,7 +79,7 @@ This means: create the migration, restart the container, schema is updated.
 3. Create migration:
    ```bash
    docker compose exec api dotnet ef migrations add AddStatusToOrders \
-     --project ../WalkingForMe.Infrastructure \
+     --project ../ExampleApp.Infrastructure \
      --startup-project .
    ```
 4. Review the generated migration file — check for unintended changes
@@ -91,13 +91,13 @@ This means: create the migration, restart the container, schema is updated.
 1. Revert the migration:
    ```bash
    docker compose exec api dotnet ef database update {PreviousMigration} \
-     --project ../WalkingForMe.Infrastructure \
+     --project ../ExampleApp.Infrastructure \
      --startup-project .
    ```
 2. Remove the migration:
    ```bash
    docker compose exec api dotnet ef migrations remove \
-     --project ../WalkingForMe.Infrastructure \
+     --project ../ExampleApp.Infrastructure \
      --startup-project .
    ```
 3. Fix the entity/configuration
@@ -112,7 +112,7 @@ Production uses explicit migration scripts:
 ```bash
 # Generate idempotent SQL script
 docker compose exec api dotnet ef migrations script \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project . \
   --idempotent \
   -o /tmp/migration.sql
@@ -143,7 +143,7 @@ The `ApplicationDbContextModelSnapshot.cs` file is the most common source of mer
 
 ```bash
 # Step 1: Accept their snapshot
-git checkout --theirs src/WalkingForMe.Infrastructure/Persistence/Migrations/ApplicationDbContextModelSnapshot.cs
+git checkout --theirs src/ExampleApp.Infrastructure/Persistence/Migrations/ApplicationDbContextModelSnapshot.cs
 
 # Step 2: Remove your migration files (the .cs and .Designer.cs)
 rm src/.../Migrations/{YourMigration}.cs
@@ -151,7 +151,7 @@ rm src/.../Migrations/{YourMigration}.Designer.cs
 
 # Step 3: Recreate your migration
 docker compose exec api dotnet ef migrations add {YourMigrationName} \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project .
 ```
 
@@ -165,7 +165,7 @@ Use empty migrations for seed data that must run in a specific order:
 
 ```bash
 docker compose exec api dotnet ef migrations add SeedDefaultRoles \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project .
 ```
 

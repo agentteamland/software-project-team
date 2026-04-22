@@ -20,8 +20,8 @@ Ask the user the following questions using AskUserQuestion. Each question should
 ```
 What is the project name?
 ```
-Free text. Must be PascalCase (e.g., WalkingForMe, ProductGlitz, MarketPlace).
-Derive abbreviation for Docker container prefix (e.g., WalkingForMe → wfm, ProductGlitz → pg).
+Free text. Must be PascalCase (e.g., ExampleApp, MarketPlace, ShopHub).
+Derive abbreviation for Docker container prefix (e.g., ExampleApp → ea, MarketPlace → mp).
 
 #### Question 2: Applications
 ```

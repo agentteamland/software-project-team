@@ -1,6 +1,6 @@
 # Writing Tokens That Claude Design Can Read
 
-When the project uses Claude Design (per `/design-screen` skill), the bundle's quality is bounded by how readable your tokens are. The walkingforme pilot (2026-04-19) demonstrated that **a minimal, well-documented `theme.dart` is enough** — Claude Design's `tokens.jsx` self-documented as "derived from flutter/lib/app/theme.dart" and the resulting Dart had zero hex literals. That outcome is reproducible only if your tokens are written intentionally.
+When the project uses Claude Design (per `/design-screen` skill), the bundle's quality is bounded by how readable your tokens are. The reference-project pilot (2026-04-19) demonstrated that **a minimal, well-documented `theme.dart` is enough** — Claude Design's `tokens.jsx` self-documented as "derived from flutter/lib/app/theme.dart" and the resulting Dart had zero hex literals. That outcome is reproducible only if your tokens are written intentionally.
 
 ## The MVP Set (sufficient for Claude Design)
 

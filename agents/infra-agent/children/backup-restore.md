@@ -17,8 +17,8 @@ docker compose exec db pg_dump \
 
 # Example with concrete values
 docker compose exec db pg_dump \
-  -U walkingforme \
-  -d walkingforme \
+  -U example_app \
+  -d example_app \
   --no-owner \
   --no-privileges \
   > backup_20260414_120000.sql
@@ -342,7 +342,7 @@ backups/
     wfm_redis_data.tar.gz
     wfm_elasticsearch_data.tar.gz
   20260413_020000/
-    walkingforme_20260413_020000.sql.gz
+    example_app_20260413_020000.sql.gz
 ```
 
 ### .gitignore Entry

@@ -7,7 +7,7 @@ Deep linking allows external URLs to open the app directly at a specific screen.
 ## Architecture
 
 ```
-External URL (https://walkingforme.com/verify-email?token=abc)
+External URL (https://example-app.com/verify-email?token=abc)
     ↓
 Platform (iOS: Universal Link / Android: App Link)
     ↓
@@ -31,7 +31,7 @@ Correct screen opens with parameters
 
 ### 1. apple-app-site-association (Server Side)
 
-Host this JSON file at `https://walkingforme.com/.well-known/apple-app-site-association` (no file extension, `Content-Type: application/json`):
+Host this JSON file at `https://example-app.com/.well-known/apple-app-site-association` (no file extension, `Content-Type: application/json`):
 
 ```json
 {
@@ -39,7 +39,7 @@ Host this JSON file at `https://walkingforme.com/.well-known/apple-app-site-asso
     "apps": [],
     "details": [
       {
-        "appID": "TEAM_ID.com.walkingforme.app",
+        "appID": "TEAM_ID.com.example_app.app",
         "paths": [
           "/verify-email",
           "/reset-password",
@@ -72,7 +72,7 @@ ios/Runner/Runner.entitlements
 <dict>
     <key>com.apple.developer.associated-domains</key>
     <array>
-        <string>applinks:walkingforme.com</string>
+        <string>applinks:example-app.com</string>
     </array>
 </dict>
 </plist>
@@ -91,7 +91,7 @@ For older iOS versions or custom scheme links:
     <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-            <string>walkingforme</string>
+            <string>example-app</string>
         </array>
     </dict>
 </array>
@@ -101,7 +101,7 @@ For older iOS versions or custom scheme links:
 
 ### 1. assetlinks.json (Server Side)
 
-Host at `https://walkingforme.com/.well-known/assetlinks.json`:
+Host at `https://example-app.com/.well-known/assetlinks.json`:
 
 ```json
 [
@@ -109,7 +109,7 @@ Host at `https://walkingforme.com/.well-known/assetlinks.json`:
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.walkingforme.app",
+      "package_name": "com.example_app.app",
       "sha256_cert_fingerprints": [
         "AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99"
       ]
@@ -144,19 +144,19 @@ keytool -list -v -keystore your-release-key.keystore -alias your-alias
         <category android:name="android.intent.category.BROWSABLE" />
         <data
             android:scheme="https"
-            android:host="walkingforme.com"
+            android:host="example-app.com"
             android:pathPrefix="/verify-email" />
         <data
             android:scheme="https"
-            android:host="walkingforme.com"
+            android:host="example-app.com"
             android:pathPrefix="/reset-password" />
         <data
             android:scheme="https"
-            android:host="walkingforme.com"
+            android:host="example-app.com"
             android:pathPrefix="/walk" />
         <data
             android:scheme="https"
-            android:host="walkingforme.com"
+            android:host="example-app.com"
             android:pathPrefix="/invite" />
     </intent-filter>
 
@@ -165,7 +165,7 @@ keytool -list -v -keystore your-release-key.keystore -alias your-alias
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="walkingforme" />
+        <data android:scheme="example-app" />
     </intent-filter>
 </activity>
 ```
@@ -377,26 +377,26 @@ go_router handles all three cases automatically. No additional setup needed for 
 ```bash
 # Test deep link (app must be installed)
 adb shell am start -a android.intent.action.VIEW \
-  -d "https://walkingforme.com/verify-email?token=test123" \
-  com.walkingforme.app
+  -d "https://example-app.com/verify-email?token=test123" \
+  com.example_app.app
 
 # Test custom scheme
 adb shell am start -a android.intent.action.VIEW \
-  -d "walkingforme://walk/abc-123" \
-  com.walkingforme.app
+  -d "example-app://walk/abc-123" \
+  com.example_app.app
 
 # Verify app links
-adb shell pm get-app-links com.walkingforme.app
+adb shell pm get-app-links com.example_app.app
 ```
 
 ### iOS Testing
 
 ```bash
 # Test universal link (on simulator)
-xcrun simctl openurl booted "https://walkingforme.com/verify-email?token=test123"
+xcrun simctl openurl booted "https://example-app.com/verify-email?token=test123"
 
 # Test custom scheme
-xcrun simctl openurl booted "walkingforme://walk/abc-123"
+xcrun simctl openurl booted "example-app://walk/abc-123"
 ```
 
 ### Debug Logging

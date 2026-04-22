@@ -31,7 +31,7 @@
 6. **Migration** — If there are schema changes (inside Docker):
    ```bash
    docker compose exec api dotnet ef migrations add {Name} \
-     --project ../WalkingForMe.Infrastructure \
+     --project ../ExampleApp.Infrastructure \
      --startup-project .
    ```
 7. **Test** — Smoke test: call the endpoint, check logs in Kibana
@@ -53,7 +53,7 @@
 ```bash
 # Run inside the Docker container (NEVER with local dotnet)
 docker compose exec api dotnet ef migrations add {MigrationName} \
-  --project ../WalkingForMe.Infrastructure \
+  --project ../ExampleApp.Infrastructure \
   --startup-project .
 ```
 

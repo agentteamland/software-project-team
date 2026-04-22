@@ -26,7 +26,7 @@ Flutter Client              Socket Hub                  API
 The interface defines generic HTTP methods. Hub methods call these to forward requests to the API.
 
 ```csharp
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public interface IApiClient
 {
@@ -57,7 +57,7 @@ The implementation is intentionally thin. No retry logic, no caching, no error h
 ```csharp
 using System.Net.Http.Json;
 
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public sealed class ApiClient : IApiClient
 {
@@ -99,7 +99,7 @@ public sealed class ApiClient : IApiClient
 Configuration for the API's base URL and the internal token for system-to-system calls.
 
 ```csharp
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public sealed class ApiClientOptions
 {
@@ -113,7 +113,7 @@ public sealed class ApiClientOptions
 This handler automatically injects the `X-Internal-Token` header on every outgoing HTTP request from the Socket to the API. Hub methods never need to think about authentication — the handler does it transparently.
 
 ```csharp
-namespace WalkingForMe.Socket.Services;
+namespace ExampleApp.Socket.Services;
 
 public sealed class InternalTokenHandler : DelegatingHandler
 {
@@ -266,7 +266,7 @@ else
 Socket DTOs are simple records — they mirror API response shapes but are owned by the Socket project:
 
 ```csharp
-namespace WalkingForMe.Socket.Models;
+namespace ExampleApp.Socket.Models;
 
 public sealed record UserProfileDto(
     Guid Id,

@@ -24,7 +24,7 @@ API Handler                   Socket                        Client
 The request model supports three target types: a specific user, a group, or all connected clients.
 
 ```csharp
-namespace WalkingForMe.Socket.Endpoints;
+namespace ExampleApp.Socket.Endpoints;
 
 public sealed record BroadcastRequest(
     string Event,              // Event name: "order-confirmed", "user-typing"
@@ -40,7 +40,7 @@ public sealed record BroadcastRequest(
 The broadcast endpoint is **not** protected by JWT — it is an internal system-to-system endpoint. Instead, it validates a shared secret via the `X-Internal-Token` header.
 
 ```csharp
-namespace WalkingForMe.Socket.Endpoints;
+namespace ExampleApp.Socket.Endpoints;
 
 public sealed class InternalSecretFilter : IEndpointFilter
 {
@@ -88,9 +88,9 @@ The endpoint receives the request, validates the internal token (via filter), an
 
 ```csharp
 using Microsoft.AspNetCore.SignalR;
-using WalkingForMe.Socket.Hubs;
+using ExampleApp.Socket.Hubs;
 
-namespace WalkingForMe.Socket.Endpoints;
+namespace ExampleApp.Socket.Endpoints;
 
 public static class InternalEndpoints
 {

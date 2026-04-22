@@ -1,6 +1,6 @@
 # Claude Design Handoff → Flutter
 
-When `/design-screen done` calls flutter-agent with an extracted Claude Design bundle, this file is the translation playbook. It captures every pattern the walkingforme login pilot (2026-04-19) surfaced as friction, plus the workflow rules.
+When `/design-screen done` calls flutter-agent with an extracted Claude Design bundle, this file is the translation playbook. It captures every pattern the reference-project login pilot (2026-04-19) surfaced as friction, plus the workflow rules.
 
 ## What's In the Bundle
 

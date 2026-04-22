@@ -41,7 +41,7 @@ If the server does not include `Access-Control-Allow-Origin` matching the reques
 ```json
 {
   "Cors": {
-    "AllowedOrigins": "https://walkingforme.com,https://app.walkingforme.com"
+    "AllowedOrigins": "https://example-app.com,https://app.example-app.com"
   }
 }
 ```
@@ -53,7 +53,7 @@ If the server does not include `Access-Control-Allow-Origin` matching the reques
 services:
   socket:
     environment:
-      - Cors__AllowedOrigins=https://walkingforme.com,https://app.walkingforme.com
+      - Cors__AllowedOrigins=https://example-app.com,https://app.example-app.com
 ```
 
 Environment variables override appsettings values. In Docker, always use environment variables for production configuration.
@@ -135,7 +135,7 @@ logger.LogInformation("CORS configured for origins: {Origins}", string.Join(", "
 
 In production logs, you will see:
 ```
-CORS configured for origins: https://walkingforme.com, https://app.walkingforme.com
+CORS configured for origins: https://example-app.com, https://app.example-app.com
 ```
 
 ## Hub-Level CORS (Alternative)
@@ -183,7 +183,7 @@ Fix: Production origins must use `https://`.
 ### 5. Trailing slash in origin
 
 Symptom: CORS rejection despite origin looking correct.
-Fix: Origins must NOT have a trailing slash. Use `https://walkingforme.com`, NOT `https://walkingforme.com/`.
+Fix: Origins must NOT have a trailing slash. Use `https://example-app.com`, NOT `https://example-app.com/`.
 
 ### 6. CORS middleware after UseAuthentication
 
