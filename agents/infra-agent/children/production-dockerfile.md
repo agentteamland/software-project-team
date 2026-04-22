@@ -79,6 +79,36 @@ HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
 ENTRYPOINT ["dotnet", "ExampleApp.Api.dll"]
 ```
 
+## Base Image Choice — Debian vs Alpine
+
+**The template above uses `mcr.microsoft.com/dotnet/aspnet:9.0` (Debian-based).** That is the default recommendation. Alpine (`-alpine` tag) is tempting for smaller images but has a sharp edge: it ships with **globalization-invariant mode enabled**, which breaks any app that uses real culture identifiers like `"en"` or `"tr"`.
+
+If your project uses `AddLocalization()` / `UseRequestLocalization()` / `CultureInfo("en")` anywhere (every multi-language project does), Alpine will crash at startup with:
+
+```
+System.Globalization.CultureNotFoundException:
+Only the invariant culture is supported in globalization-invariant mode.
+```
+
+Two ways to use Alpine safely:
+
+### Option A — Install ICU + disable invariant mode (recommended if you need Alpine)
+
+```dockerfile
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+RUN apk add --no-cache curl icu-libs icu-data-full
+# ... rest of the stage ...
+```
+
+Both lines are required: the ENV flips the runtime switch, and `icu-libs` + `icu-data-full` provide the culture data the runtime expects.
+
+### Option B — Stay on Debian (the template above)
+
+If you don't have a specific reason to use Alpine (image size sensitivity, hardening policy), keep the Debian base. It has no globalization trap and Microsoft ships it as the default. The size difference (~60MB vs ~30MB compressed) is rarely worth the Alpine gotchas.
+
+**Never deliver an Alpine-based host without the ICU + ENV fix for a project that ships multi-language UI.** The crash happens on `app.Run()`, so CI health checks don't catch it until the container actually tries to accept traffic.
+
 ## Stage-by-Stage Breakdown
 
 ### Stage 1: Restore

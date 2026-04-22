@@ -58,6 +58,56 @@ Use this template for any new .NET service (API, consumer, worker, hub):
 - Include only the connection strings and depends_on entries that the service actually uses
 - Every .NET host needs shadow volumes for its own bin/obj AND for every shared project it references
 
+### Connection-string naming contract (non-negotiable)
+
+The docker-compose env vars and the .NET `builder.Configuration.GetConnectionString(...)` call MUST agree on the name, otherwise env-var overrides silently vanish and services fall back to `appsettings.json` (or crash, if nothing is set).
+
+| Purpose | Env var in compose | Lookup in code |
+|---|---|---|
+| Primary PostgreSQL | `ConnectionStrings__DefaultConnection` | `GetConnectionString("DefaultConnection")` |
+| Redis | `ConnectionStrings__Redis` | `GetConnectionString("Redis")` |
+| RabbitMQ | `ConnectionStrings__RabbitMq` | `GetConnectionString("RabbitMq")` |
+| Elasticsearch | `ConnectionStrings__Elasticsearch` | `GetConnectionString("Elasticsearch")` |
+
+Do NOT invent alternate names like `"Postgres"`, `"Main"`, or `"Default"`. Do NOT use the flat `Redis__ConnectionString` shape either — it would require code to read `builder.Configuration["Redis:ConnectionString"]` instead of `GetConnectionString(...)`, which breaks the convention. Stick to the four names above.
+
+The `api-agent`, `redis-agent`, `rmq-agent`, and `socket-agent` all read with this contract. If a new agent or subagent emits code that uses a different name, the compose file must be updated to match — and this note is here to flag that drift.
+
+### Elasticsearch index-prefix convention
+
+Set `Elasticsearch__IndexPrefix` to the bare prefix **without a trailing dash** — the LogIngest service appends its own `-yyyy.MM.dd` separator. Correct default:
+
+```yaml
+Elasticsearch__IndexPrefix: "logs"   # produces logs-2026.04.22 (single dash — correct)
+```
+
+Wrong (creates double-dash indices like `logs--2026.04.22`):
+
+```yaml
+Elasticsearch__IndexPrefix: "logs-"  # don't
+```
+
+### Consumer host RMQ connection race
+
+RabbitMQ's default healthcheck (`rabbitmq-diagnostics check_port_connectivity`) can flip to healthy a second or two before the AMQP listener is actually accepting connections. Consumer hosts (MailSender, LogIngest) hit `Connection refused` on their first connection attempt and restart.
+
+Two durable fixes (do at least one):
+
+1. **Retry in the consumer's `StartAsync`**: wrap the initial `CreateConnection()` in a 5–10 attempt retry with exponential backoff (100ms, 250ms, 500ms, 1s, 2s …). The consumer lives for the process lifetime anyway; a few seconds of retry is cheaper than a restart.
+2. **Tighter healthcheck** in compose: replace the default port check with an actual AMQP handshake:
+
+   ```yaml
+   ma-rabbitmq:
+     healthcheck:
+       test: [ "CMD-SHELL", "rabbitmq-diagnostics -q check_running && rabbitmq-diagnostics -q check_local_alarms" ]
+       interval: 5s
+       timeout: 10s
+       retries: 10
+       start_period: 20s
+   ```
+
+Either approach eliminates the "first boot fails, restart succeeds" flake.
+
 ## Infrastructure Service Template
 
 Use this template for third-party services (databases, queues, caches):

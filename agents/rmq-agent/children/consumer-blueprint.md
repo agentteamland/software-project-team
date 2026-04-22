@@ -221,8 +221,29 @@ public sealed class EmailConsumer : BackgroundService
 
 ## Program.cs Template
 
+Required file headers (put these at the top of every consumer host's Program.cs):
+
+```csharp
+using Microsoft.Extensions.Hosting;
+```
+
+Without `using Microsoft.Extensions.Hosting;`, `Host.CreateApplicationBuilder(args)` fails to compile even though `ImplicitUsings` is enabled — the SDK's implicit usings cover `Microsoft.Extensions.*` for ASP.NET hosts (Sdk.Web) but NOT reliably for `Microsoft.NET.Sdk.Worker` across all minor versions. Always add it explicitly.
+
+Also, every Worker-SDK consumer host must pin the hosting package explicitly in its `.csproj`:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+  <!-- plus consumer-specific deps (RabbitMQ.Client, StackExchange.Redis, etc.) -->
+</ItemGroup>
+```
+
+Don't rely on the SDK's transitive reference alone — it's been observed to miss in .NET 9 with Alpine base images. A one-line package reference is cheap insurance.
+
 ```csharp
 // src/{ProjectName}.{ConsumerName}/Program.cs
+
+using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 
