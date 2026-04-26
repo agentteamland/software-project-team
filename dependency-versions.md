@@ -36,7 +36,7 @@ If `create-new-project` skill ever templates a `package.json` / `.csproj`, it mu
 | `Microsoft.IdentityModel.Tokens` | `8.0.0` | `8.*` | api-agent/children/architecture-layers.md | JWT signing. |
 | `System.IdentityModel.Tokens.Jwt` | `8.0.0` | `8.*` | api-agent/children/architecture-layers.md | |
 | `AWSSDK.S3` | `3.7.0` | `3.7.*` | api-agent/children/architecture-layers.md | Object storage. Preferred over `Minio` package; works against MinIO and real S3. |
-| **`MailKit`** | **`4.16.0`** | `4.*` (≥4.16.0) | rmq-agent/children/connection-management.md (mailsender pattern) | **CVE — STARTTLS Response Injection / SASL mechanism downgrade** (medium severity). Fixed in 4.16.0. Reference: walkingforme PR #3 (2026-04-26). MailKit lives inside the MailSender worker host (`Microsoft.NET.Sdk.Worker`). |
+| **`MailKit`** | **`4.16.0`** | `4.*` (≥4.16.0) | rmq-agent/children/connection-management.md (mailsender pattern) | **CVE — STARTTLS Response Injection / SASL mechanism downgrade** (medium severity). Fixed in 4.16.0. MailKit lives inside the MailSender worker host (`Microsoft.NET.Sdk.Worker`). |
 
 ## Pinned versions — Node / npm
 
@@ -65,17 +65,17 @@ Flutter package versions live alongside Flutter SDK constraint. Bump them in con
 | `dio` | `5.4.0` | `^5.4.0` | flutter-agent/children/dio-client.md | HTTP client. |
 | `flutter_localizations` | (sdk) | bundled | flutter-agent/children/i18n.md | Bundled with Flutter SDK. |
 
-## Walkingforme reference state — 2026-04-26
+## Reference data point — 2026-04-26
 
-| | |
+Current **Min version** pins were established by sweeping a reference project's closed dependabot alerts on 2026-04-26.
+
+| Source bump | From → To |
 |---|---|
-| Repo | https://github.com/mkurak/walkingforme |
-| Closed dependabot alerts | https://github.com/mkurak/walkingforme/security/dependabot?q=is%3Aclosed |
-| PR #3 | MailKit 4.8.0 → 4.16.0 (NuGet, MailSender worker) |
-| PR #4 | next 15.0.3 → 15.5.15 (npm, public site) |
-| Total alerts fixed | 19 (2 critical, 4 high, 11 medium, 2 low) |
+| MailKit (NuGet, MailSender worker) | 4.8.0 → 4.16.0 |
+| next (npm, public site) | 15.0.3 → 15.5.15 |
+| **Total alerts fixed** | 19 (2 critical, 4 high, 11 medium, 2 low) |
 
-This is the reference data point that established the current pins. Subsequent walkingforme dependabot bumps update this file.
+Subsequent dependabot bumps from any project update this file.
 
 ## Bump checklist (when dependabot PR lands)
 
