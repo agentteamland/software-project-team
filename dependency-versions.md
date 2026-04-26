@@ -4,13 +4,13 @@ Centralized minimum-patched version pins for libraries the project agents refere
 
 ## Why this file exists
 
-Each agent mentions packages it works with — `api-agent` lists `Microsoft.EntityFrameworkCore`, `react-agent` mentions Next.js, `rmq-agent` describes the email-consumer pattern using MailKit. Without a single source of truth, a CVE fix that lands via dependabot in one project leaves agent dosyaları bilgi-eski state'de. Future projects opened by `create-new-project` then start with a known-vulnerable baseline.
+Each agent mentions packages it works with — `api-agent` lists `Microsoft.EntityFrameworkCore`, `react-agent` mentions Next.js, `rmq-agent` describes the email-consumer pattern using MailKit. Without a single source of truth, a CVE fix that lands via dependabot in one project leaves agent files in a stale-info state. Future projects opened by `create-new-project` then start with a known-vulnerable baseline.
 
 This file is that single source of truth. When dependabot opens a security-fix PR and you merge it:
 
 1. Update this file's **Min version** column for that package.
 2. Add a one-line note in **Notes / CVEs** describing the fix.
-3. Verify the agent dosya(ları) referenced under **Referenced from** still describe the package correctly (no stale "version 14 has issue X" guidance after a major bump).
+3. Verify the agent file(s) referenced under **Referenced from** still describe the package correctly (no stale "version 14 has issue X" guidance after a major bump).
 
 If `create-new-project` skill ever templates a `package.json` / `.csproj`, it must read minimum versions from this file — not hard-code its own.
 
@@ -42,7 +42,7 @@ If `create-new-project` skill ever templates a `package.json` / `.csproj`, it mu
 
 | Package | Min version | Range | Referenced from | Notes / CVEs |
 |---|---|---|---|---|
-| **`next`** | **`15.5.15`** | `^15.5.15` | react-agent/children/seo-meta.md (SSR/Next.js path), react-agent/children/dst-handoff.md, react-agent/agent.md | **15 alerts fixed in 15.5.15 dahil 2 CRITICAL**: (a) RCE in React flight protocol, (b) Authorization Bypass in Middleware. Plus 4 High + 8 Medium + 2 Low. Reference: walkingforme PR #4 (2026-04-26). Used by `react-public` target only. |
+| **`next`** | **`15.5.15`** | `^15.5.15` | react-agent/children/seo-meta.md (SSR/Next.js path), react-agent/children/dst-handoff.md, react-agent/agent.md | **15 alerts fixed in 15.5.15 including 2 CRITICAL**: (a) RCE in React flight protocol, (b) Authorization Bypass in Middleware. Plus 4 High + 8 Medium + 2 Low. Used by `react-public` target only. |
 | `next-intl` | latest `4.x` | `^4.0.0` | react-agent/children/i18n.md | Open redirect (medium) — fixed in 4.x. |
 | `react` | `19.0.0` | `19.x` | react-agent/agent.md | Pairs with Next 15 / shadcn / Vite. |
 | `react-dom` | `19.0.0` | `19.x` | react-agent/agent.md | |

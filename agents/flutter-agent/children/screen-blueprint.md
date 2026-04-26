@@ -226,15 +226,7 @@ Every user-facing string must be added to both ARB files before the screen is co
 }
 ```
 
-**`lib/l10n/app_tr.arb`:**
-```json
-{
-  "tasks_title": "Gorevlerim",
-  "tasks_empty_title": "Henuz gorev yok",
-  "tasks_empty_subtitle": "Ilk gorevunuzu baslatmak icin + tusuna dokunun",
-  "tasks_error_load": "Gorevler yuklenemedi"
-}
-```
+**`lib/l10n/app_<locale>.arb`** (any non-default locale): mirror the same keys with translated values. Code generation fails if any key is missing.
 
 ---
 

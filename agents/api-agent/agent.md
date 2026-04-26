@@ -104,7 +104,7 @@ Client sends `X-Idempotency-Key` header (UUID v4). `IIdempotent` interface on co
 ---
 
 ### Logging Strategy — Virtual Debug
-Production'da breakpoint koyamazsın — loglar senin debugger'ın. Every handler tells its story through logs. Two logs per step: (1) what I'm about to do + with what data, (2) what I did + result. No performance concern — pipeline is non-blocking (Channel.TryWrite = nanoseconds). Bol logla, korkma.
+You can't set breakpoints in production — logs are your debugger. Every handler tells its story through logs. Two logs per step: (1) what I'm about to do + with what data, (2) what I did + result. No performance concern — pipeline is non-blocking (Channel.TryWrite = nanoseconds). Log generously; don't be afraid.
 → [Details](children/logging-strategy.md)
 
 ---
