@@ -14,6 +14,52 @@ Proves that the entire system is **truly working** — not just "containers are 
 
 ## Verification Levels
 
+### Level 0: Configuration Sanity
+
+Static checks against `docker-compose.yml` — catch blueprint drift before paying the cost of `docker compose up`. These verify that what infra-agent generated matches what `infra-agent/children/` documents.
+
+#### 0.1 Health-gated dependencies
+
+Every service that talks to a stateful infrastructure dependency (PostgreSQL, RabbitMQ, Redis, Elasticsearch) must wait on `service_healthy`, not `service_started`. `service_started` only proves the container's PID 1 exists — the broker/db may still be in its bootstrap loop, causing first-run connection errors that "auto-recover" but pollute logs and confuse new contributors.
+
+```bash
+# Find any depends_on blocks that target stateful services with service_started
+grep -nE "(rabbitmq|postgres|db|redis|elasticsearch):\s*$" -A1 docker-compose.yml \
+  | grep -B1 "condition: service_started"
+```
+
+**Pass:** No matches — every stateful dep uses `service_healthy`.
+**Fail diagnostic:** Print the offending service+dependency pairs and recommend flipping to `service_healthy`. See [infra-agent/children/health-checks.md](../../agents/infra-agent/children/health-checks.md) for the canonical pattern.
+
+#### 0.2 Shared .NET project shadow volumes
+
+When the API/Worker/Socket/LogIngest services mount source from host, every referenced .NET project (`Domain`, `Application`, `Infrastructure`, `Logging`, plus any other `.csproj` referenced by a service) needs its `bin/` and `obj/` shadowed by named volumes. Otherwise host-side `dotnet build` (run by a developer on macOS) collides with container-side Linux artefacts and produces mysterious assembly-load failures.
+
+```bash
+# For each shared project under src/, both bin and obj volumes must exist
+for proj in Domain Application Infrastructure Logging; do
+  base=$(echo "$proj" | tr '[:upper:]' '[:lower:]')   # domain, application, infrastructure, logging
+  short=${base%ation}                                  # application → applic; tweak as needed per project
+  grep -qE "^\s*${base}_bin:|^\s*${short}_bin:" docker-compose.yml || echo "MISSING: ${base}_bin"
+  grep -qE "^\s*${base}_obj:|^\s*${short}_obj:" docker-compose.yml || echo "MISSING: ${base}_obj"
+done
+```
+
+(Exact short-name convention follows [infra-agent/children/volume-strategy.md](../../agents/infra-agent/children/volume-strategy.md): `domain_bin`, `app_bin`, `infra_bin`, `logging_bin` and their `_obj` siblings. Any project referenced by a `.csproj` ProjectReference inside a service must appear in that service's `volumes:` block AND in the top-level `volumes:` declaration.)
+
+**Pass:** Every shared project has a `_bin` and `_obj` named volume, declared at the top level AND mounted into every service whose csproj references it.
+**Fail diagnostic:** List the missing volumes and the affected services. See [infra-agent/children/volume-strategy.md](../../agents/infra-agent/children/volume-strategy.md) — "Type 1: Shadow Volumes".
+
+**Report format:**
+```
+Level 0 — Configuration:
+  ✅ Health-gated deps      All stateful depends_on use service_healthy
+  ✅ Shadow volumes         domain/app/infra/logging bin+obj all declared and mounted
+  Result: ✅ PASS (2/2 checks)
+```
+
+If Level 0 fails, **stop and fix the compose file** before running Level 1+ — runtime checks against a structurally drifted compose file produce noisy false-positives.
+
 ### Level 1: Containers Running
 
 Check every container is up and healthy (not just "created" or "restarting"):
@@ -241,6 +287,7 @@ After all levels complete, produce a comprehensive report:
 ║                    {ProjectName} — {date}                    ║
 ╠══════════════════════════════════════════════════════════════╣
 ║                                                              ║
+║  Level 0 — Configuration:  ✅ PASS  (2/2 static checks)     ║
 ║  Level 1 — Containers:     ✅ PASS  (14/14 running)         ║
 ║  Level 2 — Ports:          ✅ PASS  (12/12 accessible)      ║
 ║  Level 3 — App Health:     ✅ PASS  (6/6 healthy)           ║
