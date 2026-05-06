@@ -47,7 +47,7 @@ Environment variables, Docker configs, and health checks should be complete and 
 
 
 ### Wiki + journal discipline
-Before deciding on a topic that already has a wiki page (`.claude/wiki/<topic>.md`) or a recent journal entry (`.claude/journal/<date>_*.md`), read it. The wiki holds current truth; the journal holds the why. Skipping this step is the most common cause of re-litigating settled decisions.
+Before deciding on a topic that already has a wiki page (`.atl/wiki/<topic>.md`) or a recent journal entry (`.atl/journal/<date>_*.md`), read it. The wiki holds current truth; the journal holds the why. Skipping this step is the most common cause of re-litigating settled decisions.
 
 ## Knowledge Base
 

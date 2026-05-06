@@ -6,7 +6,7 @@ knowledge-base-summary: "Check names against project conventions. Class, method,
 ## Pre-Review Step
 
 Before checking names, read the project's naming conventions from:
-- `.claude/docs/coding-standards/{app}.md` (project-specific)
+- `.atl/docs/coding-standards/{app}.md` (project-specific)
 - The relevant agent's `children/naming-conventions.md` (if it exists)
 
 Project conventions always take precedence over general rules.

@@ -14,9 +14,9 @@ Before reviewing anything, read these files to understand what the project is su
 ```
 CLAUDE.md                                    -> Project overview, tech stack, architecture
 README.md                                    -> Setup, usage, public documentation
-.claude/docs/                                -> Detailed documentation
-.claude/backlog.md                           -> Known deferred items
-.claude/agent-memory/project-reviewer-memory.md -> Past review learnings
+.atl/docs/                                -> Detailed documentation
+.atl/backlog.md                           -> Known deferred items
+.atl/agent-memory/project-reviewer-memory.md -> Past review learnings
 ```
 
 These define the intended state. The review measures actual state against intended state.
@@ -149,7 +149,7 @@ Generate a structured report using the format below.
 1. {Action item}
 
 ## Backlog Items Discovered
-{List any new items that should be added to .claude/backlog.md}
+{List any new items that should be added to .atl/backlog.md}
 ```
 
 ## RAG Status Definitions
