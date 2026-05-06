@@ -25,7 +25,7 @@ grep -rn "TODO\|FIXME\|HACK\|TEMP\|WORKAROUND\|XXX" src/ --include="*.cs" --incl
 
 ### What to Check for Each
 
-1. **Is it tracked?** Does a corresponding item exist in `.claude/backlog.md`?
+1. **Is it tracked?** Does a corresponding item exist in `.atl/backlog.md`?
 2. **How old is it?** Check git blame -- TODOs older than 3 months are likely forgotten.
 3. **Is it blocking?** Does the TODO affect correctness or security, or is it just a nice-to-have?
 4. **Is it actionable?** Does the comment explain what needs to be done, or is it just "TODO: fix this"?

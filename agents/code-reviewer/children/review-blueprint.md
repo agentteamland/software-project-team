@@ -12,9 +12,9 @@ This is the primary production unit of the Code Reviewer agent. Every code revie
 Before reviewing any code, read these files (if they exist):
 
 ```
-.claude/docs/coding-standards/{app}.md    -> Project-specific conventions
+.atl/docs/coding-standards/{app}.md    -> Project-specific conventions
 CLAUDE.md                                  -> Project overview and rules
-.claude/agent-memory/code-reviewer-memory.md -> Past learnings
+.atl/agent-memory/code-reviewer-memory.md -> Past learnings
 ```
 
 These files define the rules. Review against them, not personal preference.

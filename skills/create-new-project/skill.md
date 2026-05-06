@@ -304,7 +304,7 @@ app/
 └── design/                              ← (only if Q4 Claude Design = Yes) — empty, ready for /design-screen
 ```
 
-**If Claude Design = Yes** (Q4): create `.claude/design/` directory; ensure CLAUDE.md mentions the `/design-screen` workflow; pre-write a stub `.claude/wiki/design-workflow.md` pointing at the canonical doc.
+**If Claude Design = Yes** (Q4): create `.claude/design/` directory; ensure CLAUDE.md mentions the `/design-screen` workflow; pre-write a stub `.atl/wiki/design-workflow.md` pointing at the canonical doc.
 
 #### 2.7 Code Intelligence (.mcp.json)
 

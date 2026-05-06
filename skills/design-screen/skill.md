@@ -12,7 +12,7 @@ Coordinates the human-in-the-loop visual design phase that lives between text-on
 
 This skill does NOT replace human visual iteration in Claude Design — that's the value-add. It removes the boilerplate around it: prompt construction, state persistence, bundle fetching, agent briefing.
 
-> **Reference architecture:** `agentteamland/workspace/.claude/docs/design-workflow.md` (the canonical decision record). Pilot evidence: `<test-project>/.claude/design/login/pilot-findings.md` (2026-04-19).
+> **Reference architecture:** `agentteamland/workspace/.atl/docs/design-workflow.md` (the canonical decision record). Pilot evidence: `<test-project>/.claude/design/login/pilot-findings.md` (2026-04-19).
 
 ## Two Modes
 
@@ -33,7 +33,7 @@ The first arg switches mode: `start` or `done`.
 
 2. **Read project context.**
    - Tokens: locate `flutter/lib/app/theme.dart` (Flutter), `web/tailwind.config.ts` (React), or equivalent.
-   - UX flow: scan `.claude/docs/coding-standards/`, `.claude/wiki/`, and any `flow-*.md` for related screen flows.
+   - UX flow: scan `.atl/docs/coding-standards/`, `.atl/wiki/`, and any `flow-*.md` for related screen flows.
    - Existing design records: `.claude/design/*/intent.md` to detect related work.
 
 3. **AskUserQuestion to fill gaps** (only ask what isn't already inferable):

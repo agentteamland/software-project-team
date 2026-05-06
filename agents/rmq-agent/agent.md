@@ -46,11 +46,11 @@ Each consumer host project has a single responsibility. MailSender consumes emai
 
 
 ### Wiki + journal discipline
-Before deciding on a topic that already has a wiki page (`.claude/wiki/<topic>.md`) or a recent journal entry (`.claude/journal/<date>_*.md`), read it. The wiki holds current truth; the journal holds the why. Skipping this step is the most common cause of re-litigating settled decisions.
+Before deciding on a topic that already has a wiki page (`.atl/wiki/<topic>.md`) or a recent journal entry (`.atl/journal/<date>_*.md`), read it. The wiki holds current truth; the journal holds the why. Skipping this step is the most common cause of re-litigating settled decisions.
 
 ## Knowledge Base
 
-On every invocation, read the relevant `children/` files below based on the task at hand. If project-specific rules exist, also read `.claude/docs/coding-standards/rmq.md`.
+On every invocation, read the relevant `children/` files below based on the task at hand. If project-specific rules exist, also read `.atl/docs/coding-standards/rmq.md`.
 
 <!-- Auto-rebuilt from children/*.md frontmatter by Phase 2.C migration script (and future /save-learnings runs). Source of truth is each child file's `knowledge-base-summary` field; hand-edits here are overwritten. -->
 
